@@ -50,7 +50,7 @@ FocusScope {
             top: parent.top
         }
 
-        Layout.preferredHeight: textColumn.height + localFolder.height + remoteFolder.height + testItem.height
+        //Layout.preferredHeight: textColumn.height + localFolder.height + remoteFolder.height
 
         spacing: Constants.defaultComponentSpacing
                  - (localFolder.folderField.hint.visible + remoteFolder.folderField.hint.visible)

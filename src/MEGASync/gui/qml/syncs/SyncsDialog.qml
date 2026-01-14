@@ -63,6 +63,7 @@ SyncsQmlDialog {
                 left: parent.left
                 right: parent.right
                 top: parent.top
+                margins: defaultWindowMargin
             }
             height: implicitHeight
             implicitHeight: currentItem.height
