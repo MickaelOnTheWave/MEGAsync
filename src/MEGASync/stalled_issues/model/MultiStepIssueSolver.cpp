@@ -42,7 +42,7 @@ void MultiStepIssueSolverBase::sendStartNotification()
         DesktopNotifications::NotificationInfo startNotificationInfo;
         startNotificationInfo.title = tr("Solve issues");
         startNotificationInfo.message = StalledIssuesModel::processingIssuesString();
-        MegaSyncApp->showInfoMessage(startNotificationInfo);
+        MegaSyncApp->showSyncIssueMessage(startNotificationInfo);
     }
 }
 
@@ -72,7 +72,7 @@ void MultiStepIssueSolverBase::sendFinishNotification()
         finishNotificationInfo.message = StalledIssuesModel::issuesFixedString(count);
     }
 
-    MegaSyncApp->showInfoMessage(finishNotificationInfo);
+    MegaSyncApp->showSyncIssueMessage(finishNotificationInfo);
 
     mSolversFailedInTheSameNotification = 0;
     mSolversFixedInTheSameNotification = 0;

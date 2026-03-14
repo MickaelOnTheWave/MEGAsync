@@ -3469,6 +3469,38 @@ void MegaApplication::showInfoMessage(DesktopNotifications::NotificationInfo inf
     }
 }
 
+void MegaApplication::showSyncIssueMessage(DesktopNotifications::NotificationInfo info)
+{
+    if (appfinished)
+    {
+        return;
+    }
+
+    MegaApi::log(MegaApi::LOG_LEVEL_INFO, info.message.toUtf8().constData());
+
+    if (mOsNotifications)
+    {
+#ifdef __APPLE__
+        Utilities::queueFunctionInAppThread(
+            [this]()
+            {
+                if (infoDialog && infoDialog->isVisible())
+                {
+                    infoDialog->hide();
+                }
+            });
+#endif
+        lastTrayMessage = info.message;
+        mOsNotifications->sendSyncIssueNotification(info);
+    }
+    else
+    {
+        MessageDialogInfo msgInfo;
+        msgInfo.descriptionText = info.message;
+        MessageDialogOpener::information(msgInfo);
+    }
+}
+
 void MegaApplication::showWarningMessage(QString message, QString title)
 {
     if (appfinished)

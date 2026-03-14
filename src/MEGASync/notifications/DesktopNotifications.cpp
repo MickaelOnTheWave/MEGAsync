@@ -829,6 +829,46 @@ void DesktopNotifications::sendInfoNotification(const NotificationInfo& info) co
     }
 }
 
+void DesktopNotifications::sendSyncIssueNotification(const QString& title,
+                                                     const QString& message) const
+{
+    NotificationInfo info;
+    info.title = title;
+    info.message = message;
+    sendSyncIssueNotification(info);
+}
+
+void DesktopNotifications::sendSyncIssueNotification(const NotificationInfo& info) const
+{
+    if (mPreferences->isNotificationEnabled(Preferences::NotificationsTypes::SYNC_ISSUES))
+    {
+        auto notification = new DesktopAppNotification();
+        notification->setText(info.message);
+        notification->setActions(info.actions);
+        notification->setTitle(info.title);
+        notification->setType(NotificatorBase::Information);
+        notification->setImagePath(info.imagePath);
+
+        if (info.activatedFunction)
+        {
+            connect(notification, &DesktopAppNotification::activated, this, info.activatedFunction);
+        }
+
+        if (MegaSyncApp->thread() != MegaSyncApp->thread()->currentThread())
+        {
+            Utilities::queueFunctionInAppThread(
+                [this, notification]()
+                {
+                    mNotificator->notify(notification);
+                });
+        }
+        else
+        {
+            mNotificator->notify(notification);
+        }
+    }
+}
+
 //Warning notifications are not in used. If in a future they are used, keep in mind whether they should
 //be included in notifications settings or sent always
 void DesktopNotifications::sendWarningNotification(const QString &title, const QString &message) const

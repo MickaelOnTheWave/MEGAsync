@@ -48,16 +48,17 @@ void ReloadingEventHandler::onAppStateChanged(AppState::AppStates oldAppState,
         if (newAppState == AppState::RELOADING)
         {
             // Show a desktop notification
-            mOsNotifications->sendInfoNotification(
+            mOsNotifications->sendSyncIssueNotification(
                 tr("MEGA is reloading"),
                 tr("The app has detected an issue and is reloading your account. Please wait…"));
         }
         else if (oldAppState == AppState::RELOADING)
         {
             // Show a desktop notification
-            mOsNotifications->sendInfoNotification(tr("MEGA has reloaded"),
-                                                   tr("The app has reloaded. If you experience any "
-                                                      "further issues, please contact Support."));
+            mOsNotifications->sendSyncIssueNotification(
+                tr("MEGA has reloaded"),
+                tr("The app has reloaded. If you experience any "
+                   "further issues, please contact Support."));
             clear();
         }
     }
