@@ -28,6 +28,10 @@
   <property name="styleSheet">
    <string notr="true">#wHeader {
 background-color: #000000;
+background-image: url(:/images/mega_info_background.png);
+background-repeat: no-repeat;
+background-position: center;
+border-image: url(:/images/mega_info_background.png) 0 0 0 0 stretch stretch;
 }
 
 #wVersionOverlay {

@@ -57,7 +57,6 @@ set(DESKTOP_APP_GUI_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/ApiImageLabel.h
     ${CMAKE_CURRENT_LIST_DIR}/TabSelector.h
     ${CMAKE_CURRENT_LIST_DIR}/SearchLineEdit.h
-    ${CMAKE_CURRENT_LIST_DIR}/LineTitleGroupBox.h
     ${CMAKE_CURRENT_LIST_DIR}/TrayIconManager.h
     ${CMAKE_CURRENT_LIST_DIR}/NodeNameSetterDialog/NodeNameSetterDialog.h
     ${CMAKE_CURRENT_LIST_DIR}/NodeNameSetterDialog/NewFolderDialog.h
@@ -201,7 +200,6 @@ set(DESKTOP_APP_GUI_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/ApiImageLabel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/TabSelector.cpp
     ${CMAKE_CURRENT_LIST_DIR}/SearchLineEdit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/LineTitleGroupBox.cpp
     ${CMAKE_CURRENT_LIST_DIR}/TrayIconManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/NodeNameSetterDialog/NodeNameSetterDialog.cpp
     ${CMAKE_CURRENT_LIST_DIR}/NodeNameSetterDialog/NewFolderDialog.cpp

@@ -1251,13 +1251,13 @@ void SettingsDialog::setGeneralTabEnabled(const bool enabled)
     // Bug report controls as they are.
 
     mUi->gGeneral->setEnabled(enabled);
-    mUi->gLanguage->setEnabled(enabled);
+    mUi->cLanguage->setEnabled(enabled);
     mUi->gCache->setEnabled(enabled);
     mUi->gRemoteCache->setEnabled(enabled);
     mUi->gFileVersions->setEnabled(enabled);
 
 #ifdef Q_OS_LINUX
-    mUi->gSleepSettings->setEnabled(enabled);
+    mUi->cbSleepMode->setEnabled(enabled);
 #endif
 }
 

@@ -7,7 +7,6 @@
 #include "ui_ChangeLogDialog.h"
 
 #include <QDesktopServices>
-#include <QPainter>
 #include <QScrollBar>
 #include <QString>
 #include <QtConcurrent/QtConcurrent>
@@ -38,9 +37,6 @@ ChangeLogDialog::ChangeLogDialog(QString version, QString SDKversion, QString ch
     ui(new Ui::ChangeLogDialog)
 {
     ui->setupUi(this);
-
-    mHeaderBackground = QPixmap(QString::fromLatin1(":/images/mega_info_background.png"));
-    ui->wHeader->installEventFilter(this);
 
 #ifdef Q_OS_MACX
     setWindowFlags(windowFlags() | Qt::CustomizeWindowHint | Qt::WindowTitleHint);
@@ -140,37 +136,4 @@ void ChangeLogDialog::tweakStrings()
                                               QString::fromUtf8("&copy;"))
                                         .replace(QString::fromUtf8("[/A]"),
                                                 QString::fromUtf8("</p></html>")));
-}
-
-bool ChangeLogDialog::eventFilter(QObject* obj, QEvent* event)
-{
-    if (obj == ui->wHeader && event->type() == QEvent::Paint)
-    {
-        QPainter painter(ui->wHeader);
-        painter.setRenderHint(QPainter::SmoothPixmapTransform);
-
-        const qreal dpr = ui->wHeader->devicePixelRatioF();
-        const QSize widgetSize = ui->wHeader->size();
-        const QSizeF targetSize = QSizeF(widgetSize) * dpr;
-        const QSizeF imgSize = QSizeF(mHeaderBackground.size());
-
-        const qreal scale =
-            qMax(targetSize.width() / imgSize.width(), targetSize.height() / imgSize.height());
-
-        const int scaledW = qRound(imgSize.width() * scale);
-        const int scaledH = qRound(imgSize.height() * scale);
-
-        QPixmap scaled = mHeaderBackground.scaled(scaledW,
-                                                  scaledH,
-                                                  Qt::IgnoreAspectRatio,
-                                                  Qt::SmoothTransformation);
-        scaled.setDevicePixelRatio(dpr);
-
-        const qreal x = (widgetSize.width() - scaledW / dpr) / 2.0;
-        const qreal y = (widgetSize.height() - scaledH / dpr) / 2.0;
-        painter.drawPixmap(QPointF(x, y), scaled);
-
-        return false;
-    }
-    return QDialog::eventFilter(obj, event);
 }
