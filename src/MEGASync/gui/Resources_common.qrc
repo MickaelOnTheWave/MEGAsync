@@ -1649,5 +1649,6 @@
         <file alias="reddish/tray_icon_logging_frame_3.svg">images/system_tray/reddish/tray_icon_logging_frame_3.svg</file>
         <file alias="reddish/tray_icon_logging_frame_2.svg">images/system_tray/reddish/tray_icon_logging_frame_2.svg</file>
         <file alias="reddish/tray_icon_logging_frame_1.svg">images/system_tray/reddish/tray_icon_logging_frame_1.svg</file>
+        <file alias="folder-sync_small_thin_outline">images/themed/tokenizable/folder-sync_small_thin_outline.svg</file>
     </qresource>
 </RCC>
