@@ -296,7 +296,7 @@ void NameConflictedStalledIssue::updateName()
     }
 }
 
-bool NameConflictedStalledIssue::checkForExternalChanges()
+bool NameConflictedStalledIssue::checkForExternalChanges(QObject*)
 {
     if(!mLocalConflictedNames.isEmpty())
     {
@@ -750,51 +750,53 @@ bool NameConflictedStalledIssue::isAutoSolvable() const
 
 bool NameConflictedStalledIssue::solveIssue(ActionsSelected option)
 {
-    auto result(false);
+    return false;
 
-    if(option & ActionSelected::MergeFolders && foldersCount() > 1)
-    {
-        auto errorInfo = mCloudConflictedNames.mergeFolders();
-        result = errorInfo.error.isEmpty();
+    // auto result(false);
 
-        if(result)
-        {
-            result = checkAndSolveConflictedNamesSolved();
-        }
-        else
-        {
-            setCloudFailed(errorInfo.conflictIndex, errorInfo.error);
-        }
-    }
+    // if(option & ActionSelected::MergeFolders && foldersCount() > 1)
+    // {
+    //     auto errorInfo = mCloudConflictedNames.mergeFolders();
+    //     result = errorInfo.error.isEmpty();
 
-    if(!result && option & ActionSelected::RemoveDuplicated)
-    {
-        result = mCloudConflictedNames.removeDuplicatedNodes() == nullptr;
-        if(result)
-        {
-            result = checkAndSolveConflictedNamesSolved();
-        }
-    }
+    // if(result)
+    // {
+    //     result = checkAndSolveConflictedNamesSolved();
+    // }
+    // else
+    // {
+    //     setCloudFailed(errorInfo.conflictIndex, errorInfo.error);
+    // }
+    // }
 
-    if(!result && option & ActionSelected::KeepMostRecentlyModifiedNode)
-    {
-        result = mCloudConflictedNames.keepMostRecentlyModifiedNode() == nullptr;
-        if(result)
-        {
-            result = checkAndSolveConflictedNamesSolved();
-        }
-    }
+    // if(!result && option & ActionSelected::RemoveDuplicated)
+    // {
+    //     result = mCloudConflictedNames.removeDuplicatedNodes() == nullptr;
+    //     if(result)
+    //     {
+    //         result = checkAndSolveConflictedNamesSolved();
+    //     }
+    // }
 
-    if(!result && option & ActionSelected::Rename)
-    {
-        result = renameNodesAutomatically();
-        if(result)
-        {
-            checkAndSolveConflictedNamesSolved();
-        }
-    }
+    // if(!result && option & ActionSelected::KeepMostRecentlyModifiedNode)
+    // {
+    //     result = mCloudConflictedNames.keepMostRecentlyModifiedNode() == nullptr;
+    //     if(result)
+    //     {
+    //         result = checkAndSolveConflictedNamesSolved();
+    //     }
+    // }
 
-    return result;
+    // if(!result && option & ActionSelected::Rename)
+    // {
+    //     result = renameNodesAutomatically();
+    //     if(result)
+    //     {
+    //         checkAndSolveConflictedNamesSolved();
+    //     }
+    // }
+
+    // return result;
 }
 
 //CloudConflictedNames logic

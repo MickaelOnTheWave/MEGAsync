@@ -23,7 +23,7 @@ public:
     bool isHardLink() const;
 
     bool isExpandable() const override;
-    bool checkForExternalChanges() override;
+    bool checkForExternalChanges(QObject* context) override;
 
     static void clearIgnoredSyncs();
 

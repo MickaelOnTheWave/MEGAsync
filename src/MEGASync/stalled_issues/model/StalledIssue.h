@@ -306,7 +306,7 @@ public:
     virtual void updateHandle(mega::MegaHandle handle){if(getCloudData()){getCloudData()->setPathHandle(handle);}}
     virtual void updateName(){}
 
-    virtual bool checkForExternalChanges();
+    virtual bool checkForExternalChanges(QObject* context);
 
     mega::MegaSyncStall::SyncStallReason getReason() const;
     QString getFileName(bool preferCloud) const;

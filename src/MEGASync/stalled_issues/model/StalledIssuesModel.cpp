@@ -1149,7 +1149,7 @@ void StalledIssuesModel::solveListOfIssues(const SolveListInfo &info)
                         StalledIssueFilterCriterion::FAILED_CONFLICTS)]--;
                 }
 
-                if (issue.getData()->checkForExternalChanges())
+                if (issue.getData()->checkForExternalChanges(this))
                 {
                     issuesExternallyChanged++;
                     count.issuesFailed++;
@@ -1758,7 +1758,7 @@ void StalledIssuesModel::semiAutoSolveNameConflictIssues(const QModelIndexList& 
     {
         auto result(false);
         auto item(getStalledIssueByRow(row));
-        if(!item.getData()->checkForExternalChanges())
+        if (!item.getData()->checkForExternalChanges(this))
         {
             if(item.consultData()->getReason() == mega::MegaSyncStall::SyncStallReason::NamesWouldClashWhenSynced)
             {
@@ -1832,12 +1832,12 @@ void StalledIssuesModel::solveLocalConflictedNameFailed(int conflictIndex, const
     }
 }
 
-bool StalledIssuesModel::checkForExternalChanges(const QModelIndex& index)
+bool StalledIssuesModel::checkForExternalChanges(const QModelIndex& index, QObject* context)
 {
     auto potentialIndex = getSolveIssueIndex(index);
 
     auto issue(mStalledIssues.at(potentialIndex.row()));
-    auto result = issue.getData()->checkForExternalChanges();
+    auto result = issue.getData()->checkForExternalChanges(context ? context : this);
     if(result)
     {
         showIssueExternallyChangedMessageBox();

@@ -623,7 +623,7 @@ const QExplicitlySharedDataPointer<CloudStalledIssueData>& StalledIssue::getClou
     return mCloudData;
 }
 
-bool StalledIssue::checkForExternalChanges()
+bool StalledIssue::checkForExternalChanges(QObject*)
 {
     if(!isSolved())
     {

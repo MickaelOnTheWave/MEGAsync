@@ -572,7 +572,7 @@ bool MoveOrRenameCannotOccurIssue::isKeepSideAvailable(MoveOrRenameIssueChosenSi
     return size != 0;
 }
 
-bool MoveOrRenameCannotOccurIssue::checkForExternalChanges()
+bool MoveOrRenameCannotOccurIssue::checkForExternalChanges(QObject*)
 {
     if (!isSolved())
     {

@@ -37,7 +37,7 @@ public:
 
     bool isKeepSideAvailable(MoveOrRenameIssueChosenSide side) const;
 
-    bool checkForExternalChanges() override;
+    bool checkForExternalChanges(QObject* context) override;
 
     MoveOrRenameIssueChosenSide getChosenSide() const;
     MoveOrRenameIssueChosenSide getSyncIdChosenSide() const;

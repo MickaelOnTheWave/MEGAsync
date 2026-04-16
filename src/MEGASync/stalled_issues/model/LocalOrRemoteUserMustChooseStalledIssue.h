@@ -16,7 +16,7 @@ public:
     SolveType autoSolveIssue() override;
     bool isAutoSolvable() const override;
     void setIsSolved(SolveType type) override;
-    bool checkForExternalChanges() override;
+    bool checkForExternalChanges(QObject* context) override;
 
     HashDiscardRuleOpt hashDiscardRuleForState(SolveType type) const override
     {

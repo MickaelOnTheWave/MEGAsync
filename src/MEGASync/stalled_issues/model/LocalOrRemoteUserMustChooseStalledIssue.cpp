@@ -136,18 +136,22 @@ void LocalOrRemoteUserMustChooseStalledIssue::setIsSolved(SolveType type)
     }
 }
 
-bool LocalOrRemoteUserMustChooseStalledIssue::checkForExternalChanges()
+bool LocalOrRemoteUserMustChooseStalledIssue::checkForExternalChanges(QObject* context)
 {
     QString localCRC;
     QString remoteCRC;
 
-    getLocalData()->getAttributes()->requestCRC(this, [&localCRC](const QString& crc){
-        localCRC = crc;
-    });
+    getLocalData()->getAttributes()->requestCRC(context,
+                                                [&localCRC](const QString& crc)
+                                                {
+                                                    localCRC = crc;
+                                                });
 
-    getCloudData()->getAttributes()->requestCRC(this, [&remoteCRC](const QString& crc){
-        remoteCRC = crc;
-    });
+    getCloudData()->getAttributes()->requestCRC(context,
+                                                [&remoteCRC](const QString& crc)
+                                                {
+                                                    remoteCRC = crc;
+                                                });
 
     if(localCRC.compare(mLocalCRCAtStart) != 0 || remoteCRC.compare(mRemoteCRCAtStart) != 0)
     {

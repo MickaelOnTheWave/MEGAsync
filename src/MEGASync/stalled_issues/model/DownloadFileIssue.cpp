@@ -79,7 +79,7 @@ bool UnknownDownloadIssue::canBeRetried() const
     return isBeingSolvedByDownload(info);
 }
 
-bool UnknownDownloadIssue::checkForExternalChanges()
+bool UnknownDownloadIssue::checkForExternalChanges(QObject*)
 {
     return !canBeRetried();
 }

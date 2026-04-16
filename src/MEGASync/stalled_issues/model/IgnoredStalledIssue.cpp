@@ -111,7 +111,7 @@ bool IgnoredStalledIssue::isExpandable() const
     return !(isSymLink() || isSpecialLink() || isHardLink());
 }
 
-bool IgnoredStalledIssue::checkForExternalChanges()
+bool IgnoredStalledIssue::checkForExternalChanges(QObject*)
 {
     return false;
 }

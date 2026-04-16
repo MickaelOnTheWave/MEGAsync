@@ -186,7 +186,7 @@ public:
     void stopSolvingIssues(MessageInfo::ButtonType buttonType);
     bool isSolvingIssues() const;
 
-    bool checkForExternalChanges(const QModelIndex& index);
+    bool checkForExternalChanges(const QModelIndex& index, QObject* context = nullptr);
 
     //Name conflicts
     bool solveLocalConflictedNameByRemove(int conflictIndex, const QModelIndex& index);
