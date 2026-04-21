@@ -86,7 +86,6 @@ SelectiveSyncPageForm {
         footerButtons.rightPrimary.icons.busyIndicatorVisible = false;
     }
 
-    /*
     footerButtons {
         leftPrimary.onClicked: {
             syncsComponentAccess.exclusionsButtonClicked(localFolderChooser.chosenPath);
@@ -107,7 +106,6 @@ SelectiveSyncPageForm {
             syncsComponentAccess.syncButtonClicked(localFolderChooser.chosenPath, remoteFolderChooser.chosenPath);
         }
     }
-    */
 
     Connections {
         id: syncsComponentAccessConnection

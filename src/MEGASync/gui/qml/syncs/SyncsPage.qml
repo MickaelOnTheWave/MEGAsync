@@ -25,7 +25,6 @@ SyncsFlow {
         SelectiveSyncPage {
             id: selectiveSyncPage
 
-            /*
             footerButtons {
                 leftPrimary {
                     text: Strings.setExclusions
@@ -44,7 +43,6 @@ SyncsFlow {
             onFullSyncMoveToSuccess: {
                 root.syncsFlowMoveToFinal(Constants.SyncType.FULL_SYNC);
             }
-            */
         }
     }
 

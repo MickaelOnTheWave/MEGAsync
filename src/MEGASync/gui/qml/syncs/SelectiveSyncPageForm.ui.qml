@@ -15,34 +15,14 @@ FocusScope {
     id: root
 
     readonly property int textSpacings: 8
-    //property alias footerButtons: footerButtonsItem
+    property alias footerButtons: footerButtonsItem
     property alias localFolderChooser: localFolder
     property alias remoteFolderChooser: remoteFolder
     property alias helpLink: helpLinkItem
 
-    anchors {
-        top: parent.top
-        right: parent.right
-        left: parent.left
-    }
-
-    // Make this Item's implicit size = layout's implicit size
+    // make this Item's implicit size = layout's implicit size
     implicitWidth:  layoutItem.implicitWidth
-    implicitHeight: layoutItem.implicitHeight + Constants.defaultComponentSpacing
-
-    /*
-    footerButtons {
-        rightPrimary {
-            text: SyncsStrings.sync
-            icons.source: Images.syncIcon
-        }
-
-        rightSecondary {
-            text: syncsDataAccess.syncOrigin === SyncInfo.ONBOARDING_ORIGIN ? Strings.previous : Strings.cancel
-            visible : true
-        }
-    }
-    */
+    implicitHeight: layoutItem.implicitHeight
 
     ColumnLayout {
         id: layoutItem
@@ -53,22 +33,16 @@ FocusScope {
             top: parent.top
         }
 
-        Layout.preferredHeight: textColumn.height + localFolder.height + remoteFolder.height
-
         spacing: Constants.defaultComponentSpacing
 
         ColumnLayout {
             id: textColumn
-
-            Layout.preferredWidth: parent.width
-            Layout.preferredHeight: textSpacings + header.height + helpLinkItem.height
 
             spacing: textSpacings
 
             HeaderTexts {
                 id: header
 
-                Layout.preferredWidth: parent.width
                 title: SyncsStrings.selectiveSyncTitle
                 description: SyncsStrings.selectiveSyncDescription
             }
@@ -86,10 +60,10 @@ FocusScope {
         }
 
         ColumnLayout {
+            id: foldersColumn
+
             Layout.preferredWidth: parent.width
             spacing: Constants.defaultComponentSpacing
-                     - (localFolder.folderField.hint.visible + remoteFolder.folderField.hint.visible)
-                        * Constants.defaultComponentSpacing / 2.5
 
             ChooseSyncFolder {
                 id: localFolder
@@ -112,13 +86,37 @@ FocusScope {
             }
         }
 
-        /*
-        FooterButtons {
-            id: footerButtonsItem
+        Item {
+            id: spacer
 
-            anchors.bottom: root.bottom
+            Layout.preferredHeight: Constants.defaultComponentSpacing
         }
-        */
+
+        Item { // trick: wrapper to avoid the anchoring colision (inside the footerbuttons) with the layout manager. that's the only purpose.
+            Layout.fillWidth: true
+            Layout.preferredHeight: footerButtonsItem.implicitHeight
+
+            FooterButtons {
+                id: footerButtonsItem
+
+                rightPrimary {
+                    text: SyncsStrings.sync
+                    icons.source: Images.syncIcon
+                }
+
+                rightSecondary {
+                    text: syncsDataAccess.syncOrigin === SyncInfo.ONBOARDING_ORIGIN ? Strings.previous : Strings.cancel
+                    visible : true
+                }
+            }
+        }
+
+        Item {
+            id: bottomSpacer
+
+            Layout.preferredHeight: Constants.defaultComponentSpacing
+        }
+
     }
 
 }
