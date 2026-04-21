@@ -15,9 +15,9 @@ SyncsQmlDialog {
     title: SyncsStrings.syncsWindowTitle
     visible: false
     modality: Qt.NonModal
-    maximumHeight: syncsContentItem.implicitHeight
     minimumHeight: syncsContentItem.implicitHeight
-    height: maximumHeight
+    maximumHeight: syncsContentItem.implicitHeight
+    height: minimumHeight
     width: 640
     maximumWidth: width
     minimumWidth: width

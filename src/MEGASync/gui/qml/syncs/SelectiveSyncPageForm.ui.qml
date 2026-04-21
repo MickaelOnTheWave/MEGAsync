@@ -60,7 +60,7 @@ Item {
         ColumnLayout {
             id: foldersColumn
 
-            Layout.preferredWidth: parent.width
+            Layout.preferredWidth: parent.width + 2 * Constants.focusBorderWidth
             spacing: Constants.defaultComponentSpacing
 
             ChooseSyncFolder {
@@ -69,7 +69,7 @@ Item {
                 title: SyncsStrings.selectLocalFolder
                 leftIconSource: Images.pc
                 chosenPath: syncsDataAccess.defaultLocalFolder
-                Layout.preferredWidth: parent.width + 2 * Constants.focusBorderWidth
+                Layout.fillWidth: true
                 Layout.leftMargin: -Constants.focusBorderWidth
             }
 
@@ -79,15 +79,9 @@ Item {
                 title: SyncsStrings.selectMEGAFolder
                 leftIconSource: Images.megaOutline
                 chosenPath: syncsDataAccess.defaultRemoteFolder
-                Layout.preferredWidth: parent.width + 2 * Constants.focusBorderWidth
+                Layout.fillWidth: true
                 Layout.leftMargin: -Constants.focusBorderWidth
             }
-        }
-
-        Item {
-            id: spacer
-
-            Layout.preferredHeight: Constants.defaultComponentSpacing
         }
 
         Item { // trick: wrapper to avoid the anchoring colision (inside the footerbuttons) with the layout manager. that's the only purpose.
@@ -110,8 +104,6 @@ Item {
         }
 
         Item {
-            id: bottomSpacer
-
             Layout.preferredHeight: Constants.defaultComponentSpacing
         }
 

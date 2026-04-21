@@ -25,9 +25,7 @@ FocusScope {
 
     signal buttonClicked
 
-    width: parent.width
     height: folderItem.height
-    Layout.preferredWidth: width
     Layout.preferredHeight: folderItem.height
 
     TextField {
