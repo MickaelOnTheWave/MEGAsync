@@ -20,7 +20,7 @@ Item {
     property alias remoteFolderChooser: remoteFolder
     property alias helpLink: helpLinkItem
 
-    implicitHeight: layoutItem.height
+    implicitHeight: layoutItem.height + Constants.defaultComponentSpacing
 
     ColumnLayout {
         id: layoutItem
@@ -30,8 +30,6 @@ Item {
             right: parent.right
             top: parent.top
         }
-
-        spacing: Constants.defaultComponentSpacing
 
         ColumnLayout {
             id: textColumn
@@ -57,11 +55,14 @@ Item {
             }
         }
 
+        Item {
+            Layout.preferredHeight: Constants.defaultComponentSpacing
+        }
+
         ColumnLayout {
             id: foldersColumn
 
             Layout.preferredWidth: parent.width + 2 * Constants.focusBorderWidth
-            spacing: Constants.defaultComponentSpacing
 
             ChooseSyncFolder {
                 id: localFolder
@@ -71,6 +72,7 @@ Item {
                 chosenPath: syncsDataAccess.defaultLocalFolder
                 Layout.fillWidth: true
                 Layout.leftMargin: -Constants.focusBorderWidth
+                Layout.preferredHeight: Math.max(82, folderField.height)
             }
 
             ChooseSyncFolder {
@@ -81,7 +83,12 @@ Item {
                 chosenPath: syncsDataAccess.defaultRemoteFolder
                 Layout.fillWidth: true
                 Layout.leftMargin: -Constants.focusBorderWidth
+                Layout.preferredHeight: Math.max(90, folderField.height)
             }
+        }
+
+        Item {
+            Layout.preferredHeight: 8
         }
 
         Item { // trick: wrapper to avoid the anchoring colision (inside the footerbuttons) with the layout manager. that's the only purpose.
@@ -106,7 +113,5 @@ Item {
         Item {
             Layout.preferredHeight: Constants.defaultComponentSpacing
         }
-
     }
-
 }
