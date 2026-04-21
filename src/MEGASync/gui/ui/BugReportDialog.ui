@@ -145,9 +145,6 @@ padding-right: 32px;
         <property name="maxLength">
          <number>150</number>
         </property>
-        <property name="placeholderText">
-         <string>Optional</string>
-        </property>
         <property name="type" stdset="0">
          <string notr="true">mega</string>
         </property>
