@@ -1,13 +1,15 @@
 #include "QmlDialog.h"
 
+#include "DialogOpener.h"
+
 #include <QEvent>
+#include <QResizeEvent>
 #include <QScreen>
 
 namespace
 {
 const QLatin1String DEFAULT_RES_MEGA_ICON(":/images/app_ico.ico");
 const QLatin1String DEFAULT_TITLE("MEGA");
-constexpr double CENTERING_FACTOR(0.5);
 }
 
 QmlDialog::QmlDialog(QWindow* parent):
@@ -52,25 +54,13 @@ QmlInstancesManager* QmlDialog::getInstancesManager()
     return mInstancesManager;
 }
 
-void QmlDialog::centerAndRaise()
+void QmlDialog::readyToBeShow()
 {
-    // The following four lines are required by Ubuntu to bring the window to the front and
-    // move it to the center of the current screen, if the screen is a part of a virtual desktop or
-    // multiple screen we will need add the current screen offset(topleft) to the calculated central
-    // position.
-    const auto& geometry(QmlDialog::screen()->geometry());
-    int xPos(geometry.x() +
-             static_cast<int>(geometry.width() * CENTERING_FACTOR - width() * CENTERING_FACTOR));
-    int yPos(geometry.y() +
-             static_cast<int>(geometry.height() * CENTERING_FACTOR - height() * CENTERING_FACTOR));
+    mCenterAndRaiseAfterFirstHeightChangeEvent = true;
+    mTrackedSize = geometry().size();
 
     hide();
-    QmlDialog::setPosition(xPos, yPos);
     show();
-
-    // The following two lines are required by Windows (activate) and macOS (raise)
-    QmlDialog::requestActivate();
-    QmlDialog::raise();
 }
 
 bool QmlDialog::getCloseOnEscapePressed() const
@@ -94,6 +84,16 @@ bool QmlDialog::event(QEvent* event)
     {
         emit finished();
     }
+    else if (event->type() == QEvent::Resize)
+    {
+        auto* resizeEvent = static_cast<QResizeEvent*>(event);
+        if (resizeEvent && mCenterAndRaiseAfterFirstHeightChangeEvent &&
+            mTrackedSize != resizeEvent->size())
+        {
+            mCenterAndRaiseAfterFirstHeightChangeEvent = false;
+            placeAndRaise();
+        }
+    }
     else if (event->type() == QEvent::KeyPress)
     {
         auto* keyPressEvent = static_cast<QKeyEvent*>(event);
@@ -110,4 +110,13 @@ bool QmlDialog::event(QEvent* event)
 void QmlDialog::onRequestPageFocus()
 {
     emit initializePageFocus();
+}
+
+void QmlDialog::placeAndRaise()
+{
+    QmlDialog::setFramePosition(DialogOpener::initialDialogPosition(frameGeometry().size()));
+
+    // The following two lines are required by Windows (activate) and macOS (raise)
+    QmlDialog::requestActivate();
+    QmlDialog::raise();
 }

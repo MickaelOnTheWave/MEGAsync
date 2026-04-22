@@ -138,6 +138,11 @@ QRect QmlDialogWrapperBase::geometry()
     return mWindow->geometry();
 }
 
+QRect QmlDialogWrapperBase::frameGeometry()
+{
+    return mWindow->frameGeometry();
+}
+
 bool QmlDialogWrapperBase::isMaximized()
 {
     return (mWindow->windowState() & Qt::WindowState::WindowMaximized);

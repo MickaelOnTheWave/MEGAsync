@@ -105,6 +105,7 @@ public:
     void showNormal();
     void setGeometry(const QRect &geometry);
     QRect geometry();
+    QRect frameGeometry();
     bool isMaximized();
     bool isMinimized();
     bool isVisible();
@@ -146,7 +147,6 @@ private:
     QDialog::DialogCode mResult;
     QTimer mShowDelay;
 };
-
 
 template <class Type>
 class QmlDialogWrapper : public QmlDialogWrapperBase
@@ -273,8 +273,7 @@ public:
             this,
             [this]()
             {
-                mWindow->showNormal();
-                mWindow->centerAndRaise();
+                mWindow->readyToBeShow();
             },
             Qt::UniqueConnection);
     }

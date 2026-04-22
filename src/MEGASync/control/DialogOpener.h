@@ -63,6 +63,8 @@ private:
         virtual bool isVisible() = 0;
         virtual bool isActive() = 0;
         virtual bool isParent(QObject* parent) = 0;
+        virtual QRect geometry() const = 0;
+        virtual QRect frameGeometry() const = 0;
         virtual void applyCurrentTheme() = 0;
 
         bool ignoreCloseAllAction() const {return mIgnoreCloseAllAction;}
@@ -137,6 +139,16 @@ private:
             return mDialog->parent() == parent;
         }
 
+        QRect geometry() const override
+        {
+            return mDialog->geometry();
+        }
+
+        QRect frameGeometry() const override
+        {
+            return mDialog->frameGeometry();
+        }
+
         bool operator==(const DialogInfo &info)
         {
             return (info.mDialog == mDialog);
@@ -153,12 +165,25 @@ private:
 
     struct GeometryInfo
     {
-        bool maximized;
+        bool maximized = false;
         QRect geometry;
         bool isEmpty() const {return geometry.isEmpty();}
     };
 
 public:
+    static QPoint initialDialogPosition(const QSize& dialogSize)
+    {
+        auto primaryScreen = QGuiApplication::primaryScreen();
+        if (!primaryScreen)
+        {
+            return QPoint();
+        }
+
+        const auto primaryGeometry = primaryScreen->geometry();
+        return QPoint(primaryGeometry.x() + (primaryGeometry.width() - dialogSize.width()) / 2,
+                      primaryGeometry.y() + (primaryGeometry.height() - dialogSize.height()) / 2);
+    }
+
     template <class DialogType>
     static std::shared_ptr<DialogInfo<DialogType>> findDialog()
     {
@@ -466,23 +491,28 @@ private:
         {
             QString classType = className<DialogType>();
             auto info = findSiblingDialogInfo<DialogType>(classType);
+            bool ignoreGeometry(false);
+            QRect geometry;
+            QPoint framePosition;
+            bool hasFramePosition(false);
 
             if(info)
             {
                 if(removeSiblings && info->getDialog() != dialog)
                 {
-                    QRect siblingGeometry = info->getDialog()->geometry();
+                    geometry = info->getDialog()->geometry();
+                    framePosition = info->getDialog()->frameGeometry().topLeft();
+                    hasFramePosition = true;
                     dialog->setWindowFlags(info->getDialog()->windowFlags());
                     removeDialog(info->getDialog());
                     info->setDialog(dialog);
                     info->setDialogClass(classType);
 
                     initDialog(dialog);
-
-                    if (siblingGeometry.isValid())
-                    {
-                        dialog->setGeometry(siblingGeometry);
-                    }
+                }
+                else if (info->getDialog() == dialog)
+                {
+                    ignoreGeometry = true;
                 }
             }
             else
@@ -522,51 +552,43 @@ private:
                 dialog->setWindowModality(Qt::WindowModal);
             }
 
-            auto geoInfo = mSavedGeometries.value(classType, GeometryInfo());
-            if(!geoInfo.isEmpty())
+            if (ignoreGeometry)
             {
-                //First time this is used
-                if(geoInfo.maximized)
-                {
-                    auto dialogGeo = dialog->geometry();
-                    dialogGeo.moveCenter(geoInfo.geometry.center());
-                    dialog->move(dialogGeo.topLeft());
-                    dialog->showMaximized();
-                }
-                else
-                {
-                    dialog->setGeometry(geoInfo.geometry);
-                    dialog->show();
-                }
+                dialog->show();
             }
             else
             {
-                // If we don´t have parent, the dialog is not attached to any windows, so we should
-                // show it in a conveniente place
-                if (!dialog->parent())
+                auto savedGeo = mSavedGeometries.value(classType, GeometryInfo());
+                if (!savedGeo.isEmpty())
                 {
-                    QPoint pos;
-                    QPoint mousePos = QCursor::pos();
-                    QScreen* screen = QGuiApplication::screenAt(mousePos);
+                    geometry = savedGeo.geometry;
+                }
 
-                    if (screen)
+                if (!dialog->isVisible())
+                {
+                    if (geometry.isValid())
                     {
-                        QRect screenGeometry = screen->geometry();
-
-                        int dialogWidth = dialog->geometry().width();
-                        int dialogHeight = dialog->geometry().height();
-                        pos.setX(screenGeometry.x() + (screenGeometry.width() - dialogWidth) / 2);
-                        pos.setY(screenGeometry.y() + (screenGeometry.height() - dialogHeight) / 2);
+                        // First time this is used
+                        if (savedGeo.maximized)
+                        {
+                            dialog->showMaximized();
+                        }
+                        else
+                        {
+                            dialog->setGeometry(geometry);
+                            dialog->show();
+                            if (hasFramePosition)
+                            {
+                                dialog->move(framePosition);
+                            }
+                        }
                     }
                     else
                     {
-                        pos = mousePos;
+                        dialog->move(initialDialogPosition(dialog->geometry().size()));
+                        dialog->show();
                     }
-
-                    dialog->move(pos);
                 }
-
-                dialog->show();
             }
 
             if (dialog->parent())

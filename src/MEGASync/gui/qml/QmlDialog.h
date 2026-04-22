@@ -21,7 +21,7 @@ public:
 public slots:
     void setIconSrc(const QString& iconSrc);
     QmlInstancesManager* getInstancesManager();
-    void centerAndRaise();
+    void readyToBeShow();
     bool getCloseOnEscapePressed() const;
     void setCloseOnEscapePressed(bool active);
 
@@ -41,8 +41,12 @@ protected:
     void onRequestPageFocus();
 
 private:
+    void placeAndRaise();
+
     QString mIconSrc;
     bool mCloseOnEscapePressed = false;
+    bool mCenterAndRaiseAfterFirstHeightChangeEvent = false;
+    QSize mTrackedSize;
     QPointer<QmlInstancesManager> mInstancesManager;
 };
 
