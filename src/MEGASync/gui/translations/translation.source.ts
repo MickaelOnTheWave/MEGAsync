@@ -556,11 +556,6 @@
         <translation>Attach diagnostic log files to assist with debugging</translation>
     </message>
     <message>
-        <source>Bug report</source>
-        <translatorcomment>Title of the dialog used to send bug reports to support team.</translatorcomment>
-        <translation>Report issue</translation>
-    </message>
-    <message>
         <source>Bug report can&apos;t be submitted due to some error. Please try again or contact our support team via [A]support@mega.co.nz[/A]</source>
         <translatorcomment>Warning message shown when some error occurs during uploading a bug report.</translatorcomment>
         <translation>Your issue couldn’t be uploaded due to an error. Try again later or contact our support team via [A]support@mega.io[/A] if the problem persists.</translation>
@@ -586,19 +581,9 @@
         <translation>Continue</translation>
     </message>
     <message>
-        <source>Describe the problem</source>
-        <translatorcomment>Label to indicate the description input field of form bug report. The user will fill it with a description of the bug and any specific detail that wants to be included.</translatorcomment>
-        <translation>Describe the issue</translation>
-    </message>
-    <message>
         <source>Error on submitting bug report</source>
         <translatorcomment>Error message shown when some error occurs during uploading a bug report.</translatorcomment>
         <translation>Error while uploading reported issue.</translation>
-    </message>
-    <message>
-        <source>Optional</source>
-        <translatorcomment>Label to indicate that title field of bug report form is not mandatory.</translatorcomment>
-        <translation>Optional</translation>
     </message>
     <message>
         <source>Please clearly describe the issue you encountered. The more details, the easier for us to resolve. Your submission will be reviewed by our development team.</source>
@@ -649,6 +634,21 @@
         <source>Your bug report has been submitted, a confirmation email will sent to you accordingly.</source>
         <translatorcomment>Label to inform the user that he will receive a confirmation email </translatorcomment>
         <translation>Your issue has been submitted, a confirmation email will be sent to you.</translation>
+    </message>
+    <message>
+        <source>Please describe your issue in detail. Must be at least 30 characters.</source>
+        <translatorcomment>Validation error shown when the reported issue description does not reach the minimum required length. SNC-6268</translatorcomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Describe the problem *</source>
+        <translatorcomment>Label to indicate the description input field of form bug report. The user will fill it with a description of the bug and any specific detail that wants to be included.</translatorcomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Report issue</source>
+        <translatorcomment>Title of the dialog used to send bug reports to support team. SNC-6268</translatorcomment>
+        <translation type="unfinished">Report issue</translation>
     </message>
 </context>
 <context>
