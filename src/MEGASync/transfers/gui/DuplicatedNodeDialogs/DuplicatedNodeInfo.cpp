@@ -384,19 +384,6 @@ void ConflictTypes::autoRenameFolderConflictsForCopy()
             }
 
             const auto parentHandle = parentNode->getHandle();
-            if (!usedNamesByParent.contains(parentHandle))
-            {
-                QStringList usedNames;
-                std::unique_ptr<mega::MegaNodeList> siblingNodes(
-                    MegaSyncApp->getMegaApi()->getChildren(parentNode.get()));
-
-                for (int index = 0; index < siblingNodes->size(); ++index)
-                {
-                    usedNames.append(QString::fromUtf8(siblingNodes->get(index)->getName()));
-                }
-
-                usedNamesByParent.insert(parentHandle, usedNames);
-            }
 
             auto folderName = moveConflict->getName();
             if (folderName.isEmpty())
