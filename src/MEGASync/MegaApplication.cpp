@@ -7302,8 +7302,7 @@ void MegaApplication::startCrashReportingDialog()
             QPointer<CrashReportDialog> crashDialog = new CrashReportDialog();
             crashDialog->setAttribute(Qt::WA_DeleteOnClose);
             crashDialog->setParent(crashDialog->parentWidget(), crashDialog->windowFlags());
-            crashDialog->move(
-                DialogOpener::initialDialogPosition(crashDialog->frameGeometry().size()));
+            crashDialog->move(DialogOpener::initialDialogPosition(crashDialog->geometry().size()));
             TokenParserWidgetManager::instance()->applyCurrentTheme(crashDialog);
             TokenParserWidgetManager::instance()->registerWidgetForTheming(crashDialog);
 
