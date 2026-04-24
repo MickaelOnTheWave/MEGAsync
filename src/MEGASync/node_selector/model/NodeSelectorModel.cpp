@@ -1430,6 +1430,11 @@ bool NodeSelectorModel::processNodesAndCheckConflicts(
 
     auto conflicts = CheckDuplicatedNodes::checkMoves(handleAndTarget, sourceNode);
 
+    if (type == MoveActionType::COPY)
+    {
+        conflicts->autoRenameFolderConflictsForCopy();
+    }
+
     if (!conflicts->hasNoConflicts())
     {
         if (!handleAndTarget.isEmpty())

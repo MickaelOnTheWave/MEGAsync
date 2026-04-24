@@ -357,6 +357,71 @@ std::unique_ptr<ConflictTypes>
     return conflicts;
 }
 
+void ConflictTypes::autoRenameFolderConflictsForCopy()
+{
+    QHash<mega::MegaHandle, QStringList> usedNamesByParent;
+
+    auto resolveConflicts =
+        [this, &usedNamesByParent](QList<std::shared_ptr<DuplicatedNodeInfo>>& folderConflicts)
+    {
+        QList<std::shared_ptr<DuplicatedNodeInfo>> unresolvedConflicts;
+
+        for (const auto& conflict: folderConflicts)
+        {
+            auto moveConflict = std::dynamic_pointer_cast<DuplicatedMoveNodeInfo>(conflict);
+            if (!moveConflict)
+            {
+                unresolvedConflicts.append(conflict);
+                continue;
+            }
+
+            auto parentNode = moveConflict->getParentNode();
+            auto sourceNode = moveConflict->getSourceItemNode();
+            if (!parentNode || !sourceNode || !sourceNode->isFolder())
+            {
+                unresolvedConflicts.append(conflict);
+                continue;
+            }
+
+            const auto parentHandle = parentNode->getHandle();
+            if (!usedNamesByParent.contains(parentHandle))
+            {
+                QStringList usedNames;
+                std::unique_ptr<mega::MegaNodeList> siblingNodes(
+                    MegaSyncApp->getMegaApi()->getChildren(parentNode.get()));
+
+                for (int index = 0; index < siblingNodes->size(); ++index)
+                {
+                    usedNames.append(QString::fromUtf8(siblingNodes->get(index)->getName()));
+                }
+
+                usedNamesByParent.insert(parentHandle, usedNames);
+            }
+
+            auto folderName = moveConflict->getName();
+            if (folderName.isEmpty())
+            {
+                folderName = QString::fromUtf8(sourceNode->getName());
+            }
+
+            auto& usedNames = usedNamesByParent[parentHandle];
+            moveConflict->setSolution(NodeItemType::UPLOAD_AND_RENAME);
+            moveConflict->setNewName(Utilities::getNonDuplicatedNodeName(sourceNode.get(),
+                                                                         parentNode.get(),
+                                                                         folderName,
+                                                                         false,
+                                                                         usedNames));
+            usedNames.append(moveConflict->getNewName());
+            mResolvedConflicts.append(moveConflict);
+        }
+
+        folderConflicts = unresolvedConflicts;
+    };
+
+    resolveConflicts(mFolderConflicts);
+    resolveConflicts(mFolderNameConflicts);
+}
+
 bool ConflictTypes::hasNoConflicts() const
 {
     return mFileConflicts.isEmpty() && mFolderConflicts.isEmpty() && mFileNameConflicts.isEmpty() &&
