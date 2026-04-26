@@ -25,6 +25,7 @@ public:
         RubbishBin,
         Versions,
         Downloads,
+        Free,
         Other
     };
     Q_ENUM(UsageSegmentType)

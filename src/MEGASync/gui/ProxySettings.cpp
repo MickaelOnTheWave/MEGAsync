@@ -34,7 +34,17 @@ ProxySettings::ProxySettings(MegaApplication* app, QWidget* parent):
             this, &ProxySettings::onProxyTestFinished);
 
     connect(mUi->rProxyManual, &QRadioButton::clicked, this, [this]{setManualMode(true);});
-    connect(mUi->cProxyRequiresPassword, &QCheckBox::toggled, this, [this]{setManualMode(true);});
+    connect(mUi->cProxyRequiresPassword,
+            &QCheckBox::toggled,
+            this,
+            [this](bool checked)
+            {
+                setManualMode(true);
+                if (checked)
+                {
+                    mUi->eProxyUsername->setFocus();
+                }
+            });
     connect(mUi->rNoProxy,
             &QRadioButton::clicked,
             this,
@@ -93,12 +103,14 @@ void ProxySettings::initialize()
 void ProxySettings::setManualMode(bool enabled)
 {
     mUi->cProxyType->setEnabled(enabled);
+    mUi->lProxyType->setEnabled(enabled);
     mUi->eProxyServer->setEnabled(enabled);
+    mUi->lProxyServer->setEnabled(enabled);
     mUi->eProxyPort->setEnabled(enabled);
+    mUi->lProxyPortSeparator->setEnabled(enabled);
     mUi->cProxyRequiresPassword->setEnabled(enabled);
     mUi->wErrorBanner->setTitle(QString());
     mUi->wErrorBanner->setVisible(false);
-
     if (mUi->cProxyRequiresPassword->isEnabled())
     {
         mUi->eProxyUsername->setEnabled(mUi->cProxyRequiresPassword->isChecked());
@@ -109,6 +121,8 @@ void ProxySettings::setManualMode(bool enabled)
         mUi->eProxyUsername->setEnabled(false);
         mUi->eProxyPassword->setEnabled(false);
     }
+    mUi->lProxyUsername->setEnabled(mUi->eProxyUsername->isEnabled());
+    mUi->lProxyPassword->setEnabled(mUi->eProxyPassword->isEnabled());
 }
 
 void ProxySettings::onProxyTestFinished(bool success)

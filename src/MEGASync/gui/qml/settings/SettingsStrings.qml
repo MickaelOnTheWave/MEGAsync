@@ -16,4 +16,10 @@ QtObject {
         qsTr("Consider upgrading to avoid interruptions to uploads and synchronisation.")
     readonly property string buyMoreStorage: qsTr("Buy more storage")
     readonly property string dataTemporarilyUnavailable: qsTr("Data temporarily unavailable")
+    readonly property string cloudDriveTooltipFormat: qsTr("Cloud Drive[BR]%1")
+    readonly property string backupsTooltipFormat: qsTr("Backups[BR]%1")
+    readonly property string versionsTooltipFormat: qsTr("Versions[BR]%1")
+    readonly property string availableTooltipFormat: qsTr("Available[BR]%1")
+    readonly property string rubbishBinTooltipFormat: qsTr("Rubbish Bin[BR]%1")
+    readonly property string downloadsTooltipFormat: qsTr("Downloads[BR]%1")
 }

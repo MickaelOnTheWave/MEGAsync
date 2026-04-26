@@ -1,3 +1,6 @@
 module settings
 AccountStateSurface 1.0 AccountStateSurface.qml
+QuotaProgressSegments 1.0 QuotaProgressSegments.qml
+QuotaProgressSegmentItem 1.0 QuotaProgressSegmentItem.qml
+QuotaProgressToolTip 1.0 QuotaProgressToolTip.qml
 singleton SettingsStrings 1.0 SettingsStrings.qml

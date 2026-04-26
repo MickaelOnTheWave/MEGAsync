@@ -63,23 +63,14 @@ Item {
 
                     Layout.fillWidth: true
                     implicitHeight: 1
-                    color: ColorTheme.textSecondary
+                    color: ColorTheme.borderStrong
                 }
 
                 SettingsLinearProgress {
                     id: storageProgress
 
                     Layout.fillWidth: true
-                    Layout.topMargin: 8
-                    progressPercentage: accountStateAccess.storageUsageOnly
-                                        ? 100
-                                        : accountStateAccess.storagePercentage
-                    freeText: accountStateAccess.storageUsageOnly
-                              ? ""
-                              : accountStateAccess.storageFreeText
-                    freeTooltipText: accountStateAccess.storageUsageOnly
-                                     ? ""
-                                     : accountStateAccess.storageFreeTooltipText
+                    Layout.topMargin: 12
                     state: accountStateAccess.storageState
                     segments: accountStateAccess.storageSegments
                     onBannerActionClicked: accountStateAccess.upgradeRequested()
@@ -135,17 +126,14 @@ Item {
 
                     Layout.fillWidth: true
                     implicitHeight: 1
-                    color:ColorTheme.textSecondary
+                    color:ColorTheme.borderStrong
                 }
 
                 SettingsLinearProgress {
                     id: transferProgress
                     Layout.fillWidth: true
-                    Layout.topMargin: 8
+                    Layout.topMargin: 12
                     visible: !accountStateAccess.transferValueOnly
-                    progressPercentage: accountStateAccess.transferPercentage
-                    freeText: accountStateAccess.transferFreeText
-                    freeTooltipText: accountStateAccess.transferFreeTooltipText
                     state: accountStateAccess.transferState
                     segments: accountStateAccess.transferSegments
                     onBannerActionClicked: accountStateAccess.upgradeRequested()

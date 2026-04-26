@@ -7470,6 +7470,36 @@ Do you want to delete it anyway?</translation>
         <translatorcomment>Fallback text shown in the Account pane when storage or transfer data could not be loaded. DSN-2975</translatorcomment>
         <translation type="unfinished">Data temporarily unavailable</translation>
     </message>
+    <message>
+        <source>Cloud Drive[BR]%1</source>
+        <translatorcomment>Tooltip text shown when hovering the Cloud Drive segment in the Account pane usage bar. Keep the [BR] line break tag. %1 will be replaced with the storage amount. DSN-2975</translatorcomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Backups[BR]%1</source>
+        <translatorcomment>Tooltip text shown when hovering the Backups segment in the Account pane usage bar. Keep the [BR] line break tag. %1 will be replaced with the storage amount. DSN-2975</translatorcomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Versions[BR]%1</source>
+        <translatorcomment>Tooltip text shown when hovering the Versions segment in the Account pane usage bar. Keep the [BR] line break tag. %1 will be replaced with the storage amount. DSN-2975</translatorcomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Available[BR]%1</source>
+        <translatorcomment>Tooltip text shown when hovering the remaining available area in the Account pane usage bar. Keep the [BR] line break tag. %1 will be replaced with the available storage or transfer amount. DSN-2975</translatorcomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rubbish Bin[BR]%1</source>
+        <translatorcomment>Tooltip text shown when hovering the Rubbish Bin segment in the Account pane usage bar. Keep the [BR] line break tag. %1 will be replaced with the storage amount. DSN-2975</translatorcomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Downloads[BR]%1</source>
+        <translatorcomment>Tooltip text shown when hovering the Downloads segment in the Account pane usage bar. Keep the [BR] line break tag. %1 will be replaced with the transfer amount. DSN-2975</translatorcomment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ShellExtension</name>

@@ -5,18 +5,13 @@ import common 1.0
 import components.buttons 1.0 as Buttons
 import components.texts 1.0 as Texts
 import components.images 1.0
-import components.toolTips 1.0
-
 import AccountStateQuickWidget 1.0
 
 Item {
     id: root
 
-    property int progressPercentage: 0
     property int state: AccountStateQuickWidget.OK
     property string centerText: ""
-    property string freeText: ""
-    property string freeTooltipText: ""
     property var segments: []
     property bool showLegend: true
 
@@ -27,6 +22,7 @@ Item {
     property int defaultIconSize: 16
     property int bannerTextPixelSize: 12
     property int bannerTextLineHeight: 18
+    property int minVisibleSegmentWidth: 4
     
     signal bannerActionClicked()
 
@@ -43,6 +39,8 @@ Item {
             return ColorTheme.indicatorIndigo
         case AccountStateQuickWidget.Versions:
             return ColorTheme.supportSuccess
+        case AccountStateQuickWidget.Free:
+            return ColorTheme.surface3
         case AccountStateQuickWidget.RubbishBin:
             return ColorTheme.iconAccent
         case AccountStateQuickWidget.Other:
@@ -60,6 +58,8 @@ Item {
             return ColorTheme.indicatorIndigo
         case AccountStateQuickWidget.Versions:
             return ColorTheme.supportSuccess
+        case AccountStateQuickWidget.Free:
+            return ColorTheme.surface3
         case AccountStateQuickWidget.RubbishBin:
             return ColorTheme.iconAccent
         case AccountStateQuickWidget.Other:
@@ -77,6 +77,8 @@ Item {
             return ColorTheme.buttonErrorHover
         case AccountStateQuickWidget.Versions:
             return ColorTheme.buttonErrorHover
+        case AccountStateQuickWidget.Free:
+            return ColorTheme.surface3
         case AccountStateQuickWidget.RubbishBin:
             return ColorTheme.buttonErrorPressed
         case AccountStateQuickWidget.Other:
@@ -127,16 +129,23 @@ Item {
         return root.normalStateColorForType(type)
     }
 
-    function visibleSegments() {
-        return (segments || []).filter(function(segment) {
-            return segment && Number(segment.value) > 0
-        })
-    }
+    function legendSegments() {
+        let legend = []
 
-    function totalVisibleValue() {
-        return visibleSegments().reduce(function(total, segment) {
-            return total + Number(segment.value)
-        }, 0)
+        ;(root.segments || []).forEach(function(segment) {
+            if (Number(segment.type) === AccountStateQuickWidget.Free) {
+                return
+            }
+
+            legend.push(segment)
+            ;(segment.children || []).forEach(function(childSegment) {
+                if (childSegment && Number(childSegment.value) > 0) {
+                    legend.push(childSegment)
+                }
+            })
+        })
+
+        return legend
     }
 
     function tooltipTextForSegment(segment) {
@@ -144,17 +153,30 @@ Item {
             return ""
         }
 
+        const type = Number(segment.type)
         const label = segment.label || ""
         const sizeText = segment.sizeText || ""
-        return sizeText.length > 0 ? label + "\n" + sizeText : label
-    }
 
-    function tooltipTextForFreeArea() {
-        return freeTooltipText.length > 0 ? freeTooltipText : freeText
-    }
+        if (sizeText.length > 0) {
+            switch (type) {
+            case AccountStateQuickWidget.CloudDrive:
+                return SettingsStrings.cloudDriveTooltipFormat.arg(sizeText).replace("[BR]", "\n")
+            case AccountStateQuickWidget.Backups:
+                return SettingsStrings.backupsTooltipFormat.arg(sizeText).replace("[BR]", "\n")
+            case AccountStateQuickWidget.Versions:
+                return SettingsStrings.versionsTooltipFormat.arg(sizeText).replace("[BR]", "\n")
+            case AccountStateQuickWidget.Free:
+                return SettingsStrings.availableTooltipFormat.arg(sizeText).replace("[BR]", "\n")
+            case AccountStateQuickWidget.RubbishBin:
+                return SettingsStrings.rubbishBinTooltipFormat.arg(sizeText).replace("[BR]", "\n")
+            case AccountStateQuickWidget.Downloads:
+                return SettingsStrings.downloadsTooltipFormat.arg(sizeText).replace("[BR]", "\n")
+            default:
+                return label
+            }
+        }
 
-    function hasFreeArea() {
-        return freeArea.width > 0
+        return label
     }
 
     clip: true
@@ -180,156 +202,22 @@ Item {
                 color: ColorTheme.surface3
             }
 
-            Item {
-                id: progressFill
-
-                anchors {
-                    left: parent.left
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-                width: Math.max(0,
-                                parent.width * Math.max(0, Math.min(100, root.progressPercentage))
-                                / 100.0)
-                clip: true
-
-                Row {
-                    id: progressSegmentsLayout
-
-                    anchors.fill: parent
-                    spacing: visibleRepeater.count > 1 ? root.tightSpacing : 0
-
-                    Repeater {
-                        id: visibleRepeater
-                        model: root.visibleSegments()
-
-                        Rectangle {
-                            required property var modelData
-                            required property int index
-
-                            readonly property bool isFirstVisible: index === 0
-                            readonly property bool isLastVisible: index === visibleRepeater.count - 1
-                            readonly property bool shouldRoundRightEdge: isLastVisible
-                                                                         && !root.hasFreeArea()
-                            readonly property real normalizedWidth: {
-                                const total = root.totalVisibleValue()
-                                return total > 0 ? Number(modelData.value) / total : 0
-                            }
-
-                            width: visibleRepeater.count > 0
-                                   ? Math.max(0,
-                                              (progressFill.width - parent.spacing * (visibleRepeater.count - 1))
-                                              * normalizedWidth)
-                                   : 0
-                            height: progressFill.height
-                            color: root.segmentFillColor(modelData)
-                            radius: (isFirstVisible || shouldRoundRightEdge) ? 4 : 0
-
-                            Rectangle {
-                                anchors {
-                                    top: parent.top
-                                    right: parent.right
-                                    bottom: parent.bottom
-                                }
-                                width: parent.isFirstVisible && !parent.shouldRoundRightEdge
-                                       ? Math.max(0, parent.width - 4)
-                                       : 0
-                                visible: parent.isFirstVisible
-                                         && !parent.shouldRoundRightEdge
-                                         && parent.width > 4
-                                color: parent.color
-                            }
-
-                            Rectangle {
-                                anchors {
-                                    left: parent.left
-                                    top: parent.top
-                                    bottom: parent.bottom
-                                }
-                                width: parent.shouldRoundRightEdge && !parent.isFirstVisible
-                                       ? Math.max(0, parent.width - 4)
-                                       : 0
-                                visible: parent.shouldRoundRightEdge
-                                         && !parent.isFirstVisible
-                                         && parent.width > 4
-                                color: parent.color
-                            }
-
-                            MouseArea {
-                                anchors.fill: parent
-                                hoverEnabled: true
-
-                                ToolTip {
-                                    visible: parent.containsMouse
-                                    text: root.tooltipTextForSegment(modelData)
-                                    delay: 300
-                                    timeout: 5000
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            Item {
-                id: freeArea
-
-                anchors {
-                    top: parent.top
-                    right: parent.right
-                    bottom: parent.bottom
-                }
-                width: Math.max(0, parent.width - progressFill.width)
-                clip: true
-
-                Rectangle {
-                    anchors.fill: parent
-                    radius: 4
-                    color: ColorTheme.surface3
-                }
-
-                Rectangle {
-                    anchors {
-                        left: parent.left
-                        top: parent.top
-                        bottom: parent.bottom
-                    }
-                    width: freeArea.width > 4 ? freeArea.width - 4 : 0
-                    visible: freeArea.width > 4
-                    color: ColorTheme.surface3
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    enabled: root.tooltipTextForFreeArea().length > 0
-
-                    ToolTip {
-                        visible: parent.containsMouse && parent.enabled
-                        text: root.tooltipTextForFreeArea()
-                        delay: 300
-                        timeout: 5000
-                    }
-                }
-
-                Texts.Text {
-                    id: freeAreaText
-
-                    anchors.centerIn: parent
-                    visible: root.freeText.length > 0
-                             && freeArea.width > implicitWidth + 8
-                    text: root.freeText
-                    color: ColorTheme.textPrimary
-                    font.pixelSize: Texts.Text.Size.NORMAL
-                    font.weight: Font.DemiBold
-                }
+            QuotaProgressSegments {
+                anchors.fill: parent
+                segments: root.segments
+                segmentFillColor: root.segmentFillColor
+                tooltipTextForSegment: root.tooltipTextForSegment
+                shouldRoundLastSegment: true
+                tightSpacing: root.tightSpacing
+                segmentRadius: 4
+                minVisibleSegmentWidth: root.minVisibleSegmentWidth
             }
 
             Texts.Text {
                 id: centerTextLabel
 
                 anchors.centerIn: parent
-                visible: root.freeText.length === 0 && root.centerText.length > 0
+                visible: root.centerText.length > 0
                 text: root.centerText
                 color: ColorTheme.textPrimary
                 font.pixelSize: Texts.Text.Size.NORMAL
@@ -347,42 +235,70 @@ Item {
             Repeater {
                 id: legendRepeater
 
-                model: root.visibleSegments()
+                model: root.legendSegments()
 
                 RowLayout {
                     id: legendItemLayout
 
                     required property var modelData
 
+                    Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
                     spacing: root.tightSpacing
 
                     Item {
-                        id: legendDotContainer
+                        id: legendItemContainer
 
-                        implicitWidth: 16
-                        implicitHeight: 16
+                        implicitWidth: legendItemRow.implicitWidth
+                        implicitHeight: legendItemRow.implicitHeight
 
-                        Rectangle {
-                            id: legendDot
+                        RowLayout {
+                            id: legendItemRow
 
-                            anchors.centerIn: parent
-                            width: 7.5
-                            height: 7.5
-                            radius: width / 2
-                            color: root.segmentFillColor(modelData)
+                            anchors.fill: parent
+                            spacing: root.tightSpacing
+
+                            Item {
+                                id: legendDotContainer
+
+                                implicitWidth: 16
+                                implicitHeight: 16
+
+                                Rectangle {
+                                    id: legendDot
+
+                                    anchors.centerIn: parent
+                                    width: 7.5
+                                    height: 7.5
+                                    radius: width / 2
+                                    color: root.segmentFillColor(modelData)
+                                }
+                            }
+
+                            Texts.Text {
+                                id: legendText
+
+                                text: modelData.label
+                                font.pixelSize: 10
+                                font.weight: Font.DemiBold
+                                lineHeight: 16
+                                lineHeightMode: Text.FixedHeight
+                                color: ColorTheme.textSecondary
+                                renderType: Text.NativeRendering // Avoids the slightly blurred text appearance from default QML rendering in embedded QQuickWidget content.
+                            }
                         }
-                    }
 
-                    Texts.Text {
-                        id: legendText
+                        MouseArea {
+                            id: legendMouseArea
 
-                        text: modelData.label
-                        font.pixelSize: 10
-                        font.weight: Font.DemiBold
-                        lineHeight: 16
-                        lineHeightMode: Text.FixedHeight
-                        color: ColorTheme.textSecondary
-                        renderType: Text.NativeRendering // Avoids the slightly blurred text appearance from default QML rendering in embedded QQuickWidget content.
+                            anchors.fill: parent
+                            hoverEnabled: true
+
+                            QuotaProgressToolTip {
+                                visible: legendMouseArea.containsMouse
+                                text: root.tooltipTextForSegment(legendItemLayout.modelData)
+                                anchorItem: legendItemContainer
+                            }
+                        }
                     }
                 }
             }
