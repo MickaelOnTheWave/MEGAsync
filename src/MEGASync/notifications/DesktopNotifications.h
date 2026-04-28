@@ -56,8 +56,6 @@ public:
     void sendBusinessWarningNotification(int businessStatus) const;
     void sendInfoNotification(const QString& title, const QString& message) const;
     void sendInfoNotification(const NotificationInfo& info) const;
-    void sendSyncIssueNotification(const QString& title, const QString& message) const;
-    void sendSyncIssueNotification(const NotificationInfo& info) const;
     void sendWarningNotification(const QString& title, const QString& message) const;
     void sendErrorNotification(const QString& title, const QString& message) const;
 

@@ -397,7 +397,7 @@ void CrashHandler::sendOSNotification(bool succeeded)
             }
         };
     }
-    MegaSyncApp->showSyncIssueMessage(notification);
+    MegaSyncApp->showInfoMessage(notification);
 }
 
 void CrashHandler::deletePendingCrashReports(const QStringList& crashes)
