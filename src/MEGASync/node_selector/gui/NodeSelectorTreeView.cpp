@@ -845,6 +845,7 @@ void NodeSelectorTreeView::contextMenuEvent(QContextMenuEvent* event)
     {
         addDisputeTakedownMenuAction(actions);
         addRemoveMenuActions(actions, selectedIndexes, selectionHandles);
+        addRestoreMenuAction(actions, selectedIndexes, selectionHandles);
     }
     else
     {
