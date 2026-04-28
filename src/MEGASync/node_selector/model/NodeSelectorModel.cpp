@@ -2447,7 +2447,8 @@ void NodeSelectorModel::showReadOnlyFolders(bool show)
 
 QVariant NodeSelectorModel::getIcon(const QModelIndex& index, NodeSelectorModelItem* item) const
 {
-    auto isDisabled(!(index.flags() & Qt::ItemIsEnabled));
+    // Taken down nodes are disabled, but we don´t want to treat it like this visually
+    auto isDisabled(!(index.flags() & Qt::ItemIsEnabled) && !item->isTakenDown());
     auto disabledToken = QLatin1String("icon-disabled");
 
     switch (index.column())

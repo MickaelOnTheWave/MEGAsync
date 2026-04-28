@@ -40,7 +40,6 @@ void NodeSelectorDelegate::paint(QPainter* painter,
             if (isTakenDown)
             {
                 color = TokenParserWidgetManager::instance()->getColor(QLatin1String("text-error"));
-                color.setAlphaF(color.alphaF() * 0.5);
             }
             else
             {
@@ -235,7 +234,13 @@ QSize NodeRowDelegate::sizeHint(const QStyleOptionViewItem& option, const QModel
 void NodeRowDelegate::initStyleOption(QStyleOptionViewItem* option, const QModelIndex& index) const
 {
     QStyledItemDelegate::initStyleOption(option, index);
-    if (!index.flags().testFlag(Qt::ItemIsEnabled))
+
+    // Taken down is disabled but we want it to look like an enabled row
+    if (index.data(toInt(NodeSelectorModelRoles::IS_TAKEN_DOWN_ROLE)).toBool())
+    {
+        option->state |= QStyle::State_Enabled;
+    }
+    else if (!index.flags().testFlag(Qt::ItemIsEnabled))
     {
         option->state &= ~QStyle::State_Enabled;
     }
