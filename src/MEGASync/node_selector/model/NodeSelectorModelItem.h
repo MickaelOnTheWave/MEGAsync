@@ -43,6 +43,7 @@ public:
 
     std::shared_ptr<mega::MegaNode> getNode() const;
     bool isSpecialNode() const;
+    bool isTakenDown() const;
     bool canBeRenamed() const;
 
     void createChildItems(std::unique_ptr<mega::MegaNodeList> nodeList);

@@ -173,7 +173,7 @@ protected:
     virtual EmptyLabelInfo getEmptyLabel();
 
     Ui::NodeSelectorTreeViewWidget* ui;
-    std::unique_ptr<NodeSelectorProxyModel> mProxyModel;
+    std::shared_ptr<NodeSelectorProxyModel> mProxyModel;
     std::unique_ptr<NodeSelectorModel> mModel;
     Navigation mNavigationInfo;
     mega::MegaApi* mMegaApi;
@@ -222,7 +222,7 @@ private:
     void checkButtonsVisibility();
     void addCustomButtons(NodeSelectorTreeViewWidget* wdg);
     virtual QString getRootText() = 0;
-    virtual std::unique_ptr<NodeSelectorProxyModel> createProxyModel();
+    virtual std::shared_ptr<NodeSelectorProxyModel> createProxyModel();
     virtual std::unique_ptr<NodeSelectorModel> createModel() = 0;
 
     virtual bool isCurrentRootIndexReadOnly()
@@ -375,6 +375,8 @@ public:
         return EmptyFolderPageInfo();
     }
 
+    virtual std::shared_ptr<NodeSelectorProxyModel> createProxyModel();
+
 protected:
     bool cloudDriveIsCurrentRootIndex(NodeSelectorTreeViewWidget* wdg);
 
@@ -402,6 +404,7 @@ public:
     bool okButtonEnabled(NodeSelectorTreeViewWidget* wdg, const QModelIndexList& selected) override;
     NodeSelectorModelItemSearch::Types allowedTypes() override;
     EmptyFolderPageInfo getEmptyFolderPageInfo() override;
+    std::shared_ptr<NodeSelectorProxyModel> createProxyModel() override;
 };
 
 class StreamType: public SelectType
@@ -412,6 +415,7 @@ public:
     void newFolderButtonVisibility(NodeSelectorTreeViewWidget* wdg) override;
     bool okButtonEnabled(NodeSelectorTreeViewWidget*, const QModelIndexList& selected) override;
     NodeSelectorModelItemSearch::Types allowedTypes() override;
+    std::shared_ptr<NodeSelectorProxyModel> createProxyModel() override;
 };
 
 class UploadType: public SelectType
@@ -462,6 +466,7 @@ class MoveBackupType: public UploadType
 {
 public:
     explicit MoveBackupType() = default;
+    bool okButtonEnabled(NodeSelectorTreeViewWidget* wdg, const QModelIndexList& selected) override;
     NodeSelectorModelItemSearch::Types allowedTypes() override;
 };
 

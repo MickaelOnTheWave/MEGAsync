@@ -53,6 +53,8 @@ public:
         COPY,
         PASTE,
         SEPARATOR_5,
+        DISPUTE_TAKEDOWN,
+        SEPARATOR_6,
         DELETE_RUBBISH,
         DELETE_PERMANENTLY,
         LEAVE_SHARE
@@ -130,6 +132,7 @@ private:
     bool areAllEligibleForLinkShare(const QModelIndexList& selectedIndexes) const;
     bool areAllEligibleForRestore(const QModelIndexList& selectedIndexes) const;
     bool areAllEligibleForDownload(const QModelIndexList& selectedIndexes) const;
+    bool containsTakenDownItem(const QModelIndexList& selectedIndexes) const;
 
     void addShareLinkMenuAction(QMap<int, QAction*>& actions,
                                 const QModelIndexList& selectedIndexes,
@@ -147,6 +150,7 @@ private:
     void addSyncMenuActions(QMap<int, QAction*>& actions,
                             const QModelIndex& index,
                             MegaHandle selectedHandle);
+    void addDisputeTakedownMenuAction(QMap<int, QAction*>& actions);
     void addDeleteMenuAction(QMap<int, QAction*>& actions,
                              QList<mega::MegaHandle> selectionHandles);
     void addDeletePermanently(QMap<int, QAction*>& actions,

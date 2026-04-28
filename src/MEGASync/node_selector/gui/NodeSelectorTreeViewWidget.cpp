@@ -17,6 +17,8 @@
 
 #include <QKeyEvent>
 
+#include <algorithm>
+
 const int CHECK_UPDATED_NODES_INTERVAL = 1000;
 const int IMMEDIATE_CHECK_UPDATES_NODES_THRESHOLD = 200;
 
@@ -214,15 +216,18 @@ bool NodeSelectorTreeViewWidget::eventFilter(QObject* watched, QEvent* event)
     {
         if (auto dropEvent = static_cast<QDragEnterEvent*>(event))
         {
+            auto proxyIndex = ui->tMegaFolders->indexAt(dropEvent->pos());
+            auto sourceIndex = mProxyModel->mapToSource(proxyIndex);
+
             if (!dropEvent->mimeData()->urls().isEmpty())
             {
                 ui->tMegaFolders->dragEnterEvent(dropEvent);
             }
             else if (mModel->canDropMimeData(dropEvent->mimeData(),
                                              Qt::MoveAction,
-                                             -1,
-                                             -1,
-                                             mModel->index(0, 0, QModelIndex())))
+                                             sourceIndex.row(),
+                                             sourceIndex.column(),
+                                             sourceIndex.parent()))
             {
                 dropEvent->acceptProposedAction();
             }
@@ -230,11 +235,13 @@ bool NodeSelectorTreeViewWidget::eventFilter(QObject* watched, QEvent* event)
     }
     else if (event->type() == QEvent::DragMove)
     {
-        if (auto dropEvent = static_cast<QDragEnterEvent*>(event))
+        if (auto moveEvent = static_cast<QDragMoveEvent*>(event))
         {
-            if (!dropEvent->mimeData()->urls().isEmpty())
+            auto proxyIndex = ui->tMegaFolders->indexAt(moveEvent->pos());
+            auto sourceIndex = mProxyModel->mapToSource(proxyIndex);
+            if (!moveEvent->mimeData()->urls().isEmpty())
             {
-                ui->tMegaFolders->dragMoveEvent(dropEvent);
+                ui->tMegaFolders->dragMoveEvent(moveEvent);
             }
         }
     }
@@ -703,9 +710,9 @@ void NodeSelectorTreeViewWidget::addCustomButtons(NodeSelectorTreeViewWidget* wd
     }
 }
 
-std::unique_ptr<NodeSelectorProxyModel> NodeSelectorTreeViewWidget::createProxyModel()
+std::shared_ptr<NodeSelectorProxyModel> NodeSelectorTreeViewWidget::createProxyModel()
 {
-    return std::unique_ptr<NodeSelectorProxyModel>(new NodeSelectorProxyModel);
+    return mSelectType->createProxyModel();
 }
 
 void NodeSelectorTreeViewWidget::setLoadingSceneVisible(bool blockUi)
@@ -792,7 +799,8 @@ void NodeSelectorTreeViewWidget::onRenameClicked()
     int access = mMegaApi->getAccess(node.get());
     // This is for an extra protection as we don´t show the rename action if one of this conditions
     // are not met
-    if (!node || access < MegaShare::ACCESS_FULL || !node->isNodeKeyDecrypted())
+    if (!node || node->isTakenDown() || access < MegaShare::ACCESS_FULL ||
+        !node->isNodeKeyDecrypted())
     {
         return;
     }
@@ -1869,6 +1877,11 @@ QPushButton* SelectType::createCustomButton(const QString& type,
     return button;
 }
 
+std::shared_ptr<NodeSelectorProxyModel> SelectType::createProxyModel()
+{
+    return std::make_shared<NodeSelectorProxyModel>();
+}
+
 void DownloadType::init(NodeSelectorTreeViewWidget* wdg)
 {
     wdg->ui->bNewFolder->hide();
@@ -1884,7 +1897,15 @@ void DownloadType::newFolderButtonVisibility(NodeSelectorTreeViewWidget* wdg)
 
 bool DownloadType::okButtonEnabled(NodeSelectorTreeViewWidget* wdg, const QModelIndexList& selected)
 {
-    return !selected.isEmpty() || cloudDriveIsCurrentRootIndex(wdg);
+    const auto hasTakenDownSelection = std::any_of(
+        selected.cbegin(),
+        selected.cend(),
+        [](const QModelIndex& index)
+        {
+            return index.data(toInt(NodeSelectorModelRoles::IS_TAKEN_DOWN_ROLE)).toBool();
+        });
+
+    return !hasTakenDownSelection && (!selected.isEmpty() || cloudDriveIsCurrentRootIndex(wdg));
 }
 
 NodeSelectorModelItemSearch::Types DownloadType::allowedTypes()
@@ -1931,6 +1952,11 @@ SelectType::EmptyFolderPageInfo SyncType::getEmptyFolderPageInfo()
     return info;
 }
 
+std::shared_ptr<NodeSelectorProxyModel> SyncType::createProxyModel()
+{
+    return std::make_shared<NodeSelectorProxyModelSync>();
+}
+
 bool SyncType::isAllowedToNavigateInside(const QModelIndex& index)
 {
     if (!SelectType::isAllowedToNavigateInside(index))
@@ -1958,7 +1984,8 @@ bool StreamType::okButtonEnabled(NodeSelectorTreeViewWidget*, const QModelIndexL
 {
     if (selected.size() == 1)
     {
-        return selected.first().data(toInt(NodeSelectorModelRoles::IS_FILE_ROLE)).toBool();
+        return selected.first().data(toInt(NodeSelectorModelRoles::IS_FILE_ROLE)).toBool() &&
+               !selected.first().data(toInt(NodeSelectorModelRoles::IS_TAKEN_DOWN_ROLE)).toBool();
     }
 
     return false;
@@ -1969,6 +1996,11 @@ NodeSelectorModelItemSearch::Types StreamType::allowedTypes()
     return NodeSelectorModelItemSearch::Type::CLOUD_DRIVE |
            NodeSelectorModelItemSearch::Type::INCOMING_SHARE |
            NodeSelectorModelItemSearch::Type::BACKUP;
+}
+
+std::shared_ptr<NodeSelectorProxyModel> StreamType::createProxyModel()
+{
+    return std::make_shared<NodeSelectorProxyModelStream>();
 }
 
 void UploadType::init(NodeSelectorTreeViewWidget* wdg)
@@ -2120,6 +2152,19 @@ void CloudDriveType::selectionHasChanged(NodeSelectorTreeViewWidget* wdg)
 }
 
 //////////////////
+bool MoveBackupType::okButtonEnabled(NodeSelectorTreeViewWidget* wdg,
+                                     const QModelIndexList& selected)
+{
+    if (selected.size() == 1)
+    {
+        bool isTakenDown =
+            selected.first().data(toInt(NodeSelectorModelRoles::IS_TAKEN_DOWN_ROLE)).toBool();
+        return !isTakenDown;
+    }
+
+    return false;
+}
+
 NodeSelectorModelItemSearch::Types MoveBackupType::allowedTypes()
 {
     return NodeSelectorModelItemSearch::Type::CLOUD_DRIVE;

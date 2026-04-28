@@ -26,6 +26,8 @@ public:
     ~NodeSelectorProxyModel();
 
     void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override;
+    Qt::ItemFlags flags(const QModelIndex& index) const override;
+    virtual void applyProxyModelFlags(Qt::ItemFlags& flags, const QModelIndex& index) const;
 
     mega::MegaHandle getHandle(const QModelIndex& index);
     std::shared_ptr<mega::MegaNode> getNode(const QModelIndex& index);
@@ -72,14 +74,30 @@ private slots:
     void onModelSortedFiltered();
 };
 
+class NodeSelectorProxyModelStream: public NodeSelectorProxyModel
+{
+public:
+    explicit NodeSelectorProxyModelStream(QObject* parent = nullptr);
+    void applyProxyModelFlags(Qt::ItemFlags& flags, const QModelIndex& index) const override;
+};
+
+class NodeSelectorProxyModelSync: public NodeSelectorProxyModel
+{
+public:
+    explicit NodeSelectorProxyModelSync(QObject* parent = nullptr);
+    void applyProxyModelFlags(Qt::ItemFlags& flags, const QModelIndex& index) const override;
+};
+
 class NodeSelectorProxyModelSearch: public NodeSelectorProxyModel
 {
     Q_OBJECT
 
 public:
-    explicit NodeSelectorProxyModelSearch(QObject* parent = nullptr);
+    explicit NodeSelectorProxyModelSearch(std::shared_ptr<NodeSelectorProxyModel> mainProxyModel,
+                                          QObject* parent = nullptr);
     void setMode(NodeSelectorModelItemSearch::Types mode, bool forceFilter = true);
     bool canBeDeleted() const override;
+    Qt::ItemFlags flags(const QModelIndex& index) const override;
 
 signals:
     void modeEmpty();
@@ -89,6 +107,7 @@ protected:
 
 private:
     NodeSelectorModelItemSearch::Types mMode;
+    std::shared_ptr<NodeSelectorProxyModel> mMainProxyModel;
 };
 
 #endif // NODESELECTORPROXYMODEL_H

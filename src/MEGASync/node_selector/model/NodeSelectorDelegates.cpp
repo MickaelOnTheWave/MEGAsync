@@ -39,12 +39,17 @@ void NodeSelectorDelegate::paint(QPainter* painter,
         }
         else
         {
-            auxOpt.palette.setBrush(
-                QPalette::ColorRole::Text,
-                TokenParserWidgetManager::instance()->getColor(QLatin1String("text-primary")));
-            auxOpt.palette.setBrush(
-                QPalette::ColorRole::HighlightedText,
-                TokenParserWidgetManager::instance()->getColor(QLatin1String("text-primary")));
+            const auto isTakenDown(
+                index.data(toInt(NodeSelectorModelRoles::IS_TAKEN_DOWN_ROLE)).toBool());
+            auto textToken = QLatin1String("text-primary");
+            if (isTakenDown && index.column() == NodeSelectorModel::Column::NODE)
+            {
+                textToken = QLatin1String("text-error");
+            }
+            auxOpt.palette.setBrush(QPalette::ColorRole::Text,
+                                    TokenParserWidgetManager::instance()->getColor(textToken));
+            auxOpt.palette.setBrush(QPalette::ColorRole::HighlightedText,
+                                    TokenParserWidgetManager::instance()->getColor(textToken));
         }
 
         // Separator
@@ -151,7 +156,14 @@ QPixmap NodeRowDelegate::paintForDrag(const QModelIndex& index, QAbstractItemVie
 
     QStyleOptionViewItem option;
     option.initFrom(view);
+    option.widget = view;
     option.rect = QRect(0, 0, rect.width(), rect.height());
+    option.decorationPosition = QStyleOptionViewItem::Left;
+    option.decorationAlignment = Qt::AlignCenter;
+    option.displayAlignment = Qt::AlignVCenter | Qt::AlignLeft;
+    option.textElideMode = view->textElideMode();
+    option.showDecorationSelected =
+        view->style()->styleHint(QStyle::SH_ItemView_ShowDecorationSelected, nullptr, view);
 
     QPainter painter(&pixmap);
 

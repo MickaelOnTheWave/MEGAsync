@@ -171,5 +171,6 @@
         <file alias="info_small_thin_outline_text_info">images/themed/dark/info_small_thin_outline_text_info.svg</file>
         <file alias="x_circle_small_thin_outline_text_error">images/themed/dark/x_circle_small_thin_outline_text_error.svg</file>
         <file alias="folder_small_thin">images/themed/dark/folder_small_thin_solid.svg</file>
+        <file alias="message-alert_small_thin_outline">images/themed/dark/message-alert_small_thin_outline.svg</file>
     </qresource>
 </RCC>

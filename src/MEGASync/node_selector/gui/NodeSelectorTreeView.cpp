@@ -12,6 +12,7 @@
 #include "NodeSelectorProxyModel.h"
 #include "Platform.h"
 #include "ThemeManager.h"
+#include "Utilities.h"
 
 #include <QDrag>
 #include <QMenu>
@@ -19,6 +20,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
+#include <QUrl>
 
 QList<mega::MegaHandle> NodeSelectorTreeView::mCopiedHandles = QList<mega::MegaHandle>();
 
@@ -89,7 +91,8 @@ QList<MegaHandle>
 
     foreach(auto& s_index, selectedRows)
     {
-        if (auto node = proxyModel()->getNode(s_index))
+        auto node = proxyModel()->getNode(s_index);
+        if (node)
         {
             ret.append(node->getHandle());
         }
@@ -118,7 +121,8 @@ void NodeSelectorTreeView::drawBranches(QPainter* painter,
 {
     auto item = qvariant_cast<NodeSelectorModelItem*>(
         index.data(toInt(NodeSelectorModelRoles::MODEL_ITEM_ROLE)));
-    if (item && (item->isCloudDrive() || item->isMyBackupsFolder() || item->isRubbishBin()))
+    if (item && (item->isCloudDrive() || item->isMyBackupsFolder() || item->isRubbishBin() ||
+                 item->isTakenDown()))
     {
         return;
     }
@@ -366,6 +370,8 @@ void NodeSelectorTreeView::keyPressEvent(QKeyEvent* event)
 
 void NodeSelectorTreeView::onCopyShortcutActivated()
 {
+    mCopiedHandles.clear();
+
     auto selectedIndexes(selectedRows());
     if (areAllEligibleForCopy(selectedIndexes))
     {
@@ -628,6 +634,23 @@ void NodeSelectorTreeView::setAllowContextMenu(bool newAllowContextMenu)
     mAllowContextMenu = newAllowContextMenu;
 }
 
+void NodeSelectorTreeView::addDisputeTakedownMenuAction(QMap<int, QAction*>& actions)
+{
+    auto disputeAction(new MegaMenuItemAction(
+        tr("Dispute takedown"),
+        Utilities::getPixmapName(QLatin1String("message-alert"),
+                                 Utilities::AttributeType::SMALL | Utilities::AttributeType::THIN |
+                                     Utilities::AttributeType::OUTLINE,
+                                 false)));
+    connect(disputeAction,
+            &QAction::triggered,
+            []()
+            {
+                Utilities::openUrl(QUrl(QStringLiteral("https://mega.io/dispute")));
+            });
+    actions.insert(ActionsOrder::DISPUTE_TAKEDOWN, disputeAction);
+}
+
 void NodeSelectorTreeView::addDeleteMenuAction(QMap<int, QAction*>& actions,
                                                QList<MegaHandle> selectionHandles)
 {
@@ -816,63 +839,72 @@ void NodeSelectorTreeView::contextMenuEvent(QContextMenuEvent* event)
     }
 
     QMap<int, QAction*> actions;
+    const auto takenDownSelection = containsTakenDownItem(selectedIndexes);
 
-    if (!clickedEmptySpace && areAllEligibleForCopy(selectedIndexes))
+    if (!clickedEmptySpace && takenDownSelection)
     {
-        auto copyAction(
-            new MegaMenuItemAction(tr("Copy"),
-                                   Utilities::getPixmapName(QLatin1String("copy-02"),
-                                                            Utilities::AttributeType::SMALL |
-                                                                Utilities::AttributeType::THIN |
-                                                                Utilities::AttributeType::OUTLINE,
-                                                            false)));
-        connect(copyAction,
-                &QAction::triggered,
-                [selectionHandles]()
-                {
-                    mCopiedHandles = selectionHandles;
-                });
-        actions.insert(ActionsOrder::COPY, copyAction);
-    }
-
-    // Don´t offer "Download" if the folder is empty
-    if (model()->index(0, 0, rootIndex()).isValid())
-    {
-        addDownloadMenuAction(actions, selectedIndexes, selectionHandles);
-    }
-
-    if (clickedEmptySpace && !mRootIndexReadOnly)
-    {
-        addUploadMenuAction(actions);
-    }
-
-    addPasteMenuAction(actions, selectedIndexes);
-
-    if (clickedEmptySpace)
-    {
-        addNewFolderMenuAction(actions);
-    }
-
-    if (!clickedEmptySpace && !selectedIndexes.isEmpty())
-    {
-        if (selectedIndexes.size() == 1)
-        {
-            auto selectedIndex = proxyModel->mapToSource(selectedIndexes.first());
-
-            addRenameMenuAction(actions, selectedIndex);
-
-            if (!selectionHandles.isEmpty())
-            {
-                addSyncMenuActions(actions, selectedIndex, selectionHandles.first());
-            }
-        }
-
-        addRestoreMenuAction(actions, selectedIndexes, selectionHandles);
-        addShareLinkMenuAction(actions, selectedIndexes, selectionHandles);
+        addDisputeTakedownMenuAction(actions);
         addRemoveMenuActions(actions, selectedIndexes, selectionHandles);
     }
+    else
+    {
+        if (!clickedEmptySpace && areAllEligibleForCopy(selectedIndexes))
+        {
+            auto copyAction(new MegaMenuItemAction(
+                tr("Copy"),
+                Utilities::getPixmapName(QLatin1String("copy-02"),
+                                         Utilities::AttributeType::SMALL |
+                                             Utilities::AttributeType::THIN |
+                                             Utilities::AttributeType::OUTLINE,
+                                         false)));
+            connect(copyAction,
+                    &QAction::triggered,
+                    [selectionHandles]()
+                    {
+                        mCopiedHandles = selectionHandles;
+                    });
+            actions.insert(ActionsOrder::COPY, copyAction);
+        }
 
-    QAction* lastActionAdded(nullptr);
+        // Don´t offer "Download" if the folder is empty
+        if (model()->index(0, 0, rootIndex()).isValid())
+        {
+            addDownloadMenuAction(actions, selectedIndexes, selectionHandles);
+        }
+
+        if (clickedEmptySpace && !mRootIndexReadOnly)
+        {
+            addUploadMenuAction(actions);
+        }
+
+        addPasteMenuAction(actions, selectedIndexes);
+
+        if (clickedEmptySpace)
+        {
+            addNewFolderMenuAction(actions);
+        }
+
+        if (!clickedEmptySpace && !selectedIndexes.isEmpty())
+        {
+            if (selectedIndexes.size() == 1)
+            {
+                auto selectedIndex = proxyModel->mapToSource(selectedIndexes.first());
+
+                addRenameMenuAction(actions, selectedIndex);
+
+                if (!selectionHandles.isEmpty())
+                {
+                    addSyncMenuActions(actions, selectedIndex, selectionHandles.first());
+                }
+            }
+
+            addRemoveMenuActions(actions, selectedIndexes, selectionHandles);
+            addRestoreMenuAction(actions, selectedIndexes, selectionHandles);
+            addShareLinkMenuAction(actions, selectedIndexes, selectionHandles);
+        }
+    }
+
+    bool separatorPending(false);
 
     QMetaEnum e = QMetaEnum::fromType<ActionsOrder>();
     for (int i = 0; i < e.keyCount(); i++)
@@ -880,17 +912,18 @@ void NodeSelectorTreeView::contextMenuEvent(QContextMenuEvent* event)
         QString actionName(QString::fromUtf8(e.key(i)));
         if (actionName.contains(QLatin1String("SEPARATOR")))
         {
-            if (lastActionAdded)
-            {
-                customMenu.addSeparator();
-            }
+            separatorPending = !customMenu.actions().isEmpty();
         }
         else
         {
             auto action(actions.value(e.value(i)));
             if (action)
             {
-                lastActionAdded = action;
+                if (separatorPending)
+                {
+                    customMenu.addSeparator();
+                    separatorPending = false;
+                }
                 customMenu.addAction(action);
             }
         }
@@ -952,7 +985,8 @@ void NodeSelectorTreeView::dragMoveEvent(QDragMoveEvent* event)
     if (proxyModel()->getMegaModel()->acceptDragAndDrop(event->mimeData()))
     {
         // get drop index
-        QModelIndex dropIndex = indexAt(event->pos());
+        const QModelIndex posIndex = indexAt(event->pos());
+        QModelIndex dropIndex(posIndex);
         if (!dropIndex.isValid())
         {
             dropIndex = rootIndex();
@@ -961,14 +995,17 @@ void NodeSelectorTreeView::dragMoveEvent(QDragMoveEvent* event)
         // clear selection and select only the drop index
         selectionModel()->clearSelection();
 
-        if (!proxyModel()->canDropMimeData(event->mimeData(), Qt::MoveAction, -1, -1, dropIndex))
+        if (!proxyModel()->canDropMimeData(event->mimeData(),
+                                           Qt::MoveAction,
+                                           dropIndex.row(),
+                                           dropIndex.column(),
+                                           dropIndex.parent()))
         {
             event->ignore();
             return;
         }
 
-        selectionModel()->select(indexAt(event->pos()),
-                                 QItemSelectionModel::Select | QItemSelectionModel::Rows);
+        selectionModel()->select(posIndex, QItemSelectionModel::Select | QItemSelectionModel::Rows);
 
         event->acceptProposedAction();
         event->accept();
@@ -1061,7 +1098,7 @@ bool NodeSelectorTreeView::areAllEligibleForCopy(const QModelIndexList& selected
     foreach(const auto& index, selectedIndexes)
     {
         auto item = proxyModel()->getMegaModel()->getItemByIndex(index);
-        if (!item || item->isSpecialNode())
+        if (!item || item->isSpecialNode() || item->isTakenDown())
         {
             return false;
         }
@@ -1132,7 +1169,7 @@ bool NodeSelectorTreeView::areAllEligibleForLinkShare(const QModelIndexList& sel
     {
         auto item = proxyModel()->getMegaModel()->getItemByIndex(index);
         if (!item || ((item->getNodeAccess() != mega::MegaShare::ACCESS_OWNER) ||
-                      item->isSpecialNode() || item->isInRubbishBin()))
+                      item->isSpecialNode() || item->isInRubbishBin() || item->isTakenDown()))
         {
             result = false;
             break;
@@ -1200,7 +1237,7 @@ bool NodeSelectorTreeView::areAllEligibleForDownload(const QModelIndexList& sele
         }
 
         auto item = proxyModel()->getMegaModel()->getItemByIndex(index);
-        if (!item || item->isInRubbishBin())
+        if (!item || item->isInRubbishBin() || item->isTakenDown())
         {
             return false;
         }
@@ -1224,6 +1261,20 @@ void NodeSelectorTreeView::renameNode()
 void NodeSelectorTreeView::restore(const QList<mega::MegaHandle>& handles)
 {
     emit restoreClicked(handles);
+}
+
+bool NodeSelectorTreeView::containsTakenDownItem(const QModelIndexList& selectedIndexes) const
+{
+    for (const auto& index: selectedIndexes)
+    {
+        auto item = proxyModel()->getMegaModel()->getItemByIndex(index);
+        if (item && item->isTakenDown())
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void NodeSelectorTreeView::onNavigateReady(const QModelIndex& index)

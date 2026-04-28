@@ -1,6 +1,7 @@
 #ifndef NODESELECTORTREEVIEWWIDGETSPECIALIZATIONS_H
 #define NODESELECTORTREEVIEWWIDGETSPECIALIZATIONS_H
 
+#include "NodeSelectorProxyModel.h"
 #include "NodeSelectorTreeViewWidget.h"
 
 #include <QLabel>
@@ -10,7 +11,6 @@
 
 #include <memory>
 
-class NodeSelectorProxyModel;
 class NodeSelectorModel;
 class RestoreNodeManager;
 class TabSelector;
@@ -109,7 +109,6 @@ public:
     explicit NodeSelectorTreeViewWidgetSearch(SelectTypeSPtr mode, QWidget* parent = nullptr);
     void search(const QString& text);
     void stopSearch();
-    std::unique_ptr<NodeSelectorProxyModel> createProxyModel() override;
     bool isCurrentRootIndexReadOnly() override;
     bool isSelectionReadOnly(const QModelIndexList& selection) override;
 
@@ -146,6 +145,7 @@ private:
     void changeColumnsVisibility(NodeSelectorModelItemSearch::Type type);
     void resetChipsVisibility();
     QString getRootText() override;
+    std::shared_ptr<NodeSelectorProxyModel> createProxyModel() override;
     std::unique_ptr<NodeSelectorModel> createModel() override;
     QIcon getEmptyIcon() override;
     EmptyLabelInfo getEmptyLabel() override;

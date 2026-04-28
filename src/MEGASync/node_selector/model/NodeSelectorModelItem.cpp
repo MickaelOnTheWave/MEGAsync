@@ -59,10 +59,16 @@ bool NodeSelectorModelItem::isSpecialNode() const
     return (isCloudDrive() || isMyBackupsFolder() || isRubbishBin());
 }
 
+bool NodeSelectorModelItem::isTakenDown() const
+{
+    return mNode && mNode->isTakenDown();
+}
+
 bool NodeSelectorModelItem::canBeRenamed() const
 {
-    if (isCloudDrive() || isMyBackupsFolder() || isRubbishBin() || isInRubbishBin() ||
-        (mMegaApi->isInVault(mNode.get())) || (getNodeAccess() < mega::MegaShare::ACCESS_FULL))
+    if (isTakenDown() || isCloudDrive() || isMyBackupsFolder() || isRubbishBin() ||
+        isInRubbishBin() || (mMegaApi->isInVault(mNode.get())) ||
+        (getNodeAccess() < mega::MegaShare::ACCESS_FULL))
     {
         return false;
     }
@@ -260,7 +266,7 @@ QIcon NodeSelectorModelItem::getStatusIcons()
 {
     QIcon statusIcons; // first is selected state icon / second is normal state icon
 
-    if (mNode && !mNode->isNodeKeyDecrypted())
+    if (mNode && (mNode->isTakenDown() || !mNode->isNodeKeyDecrypted()))
     {
         statusIcons.addFile(QLatin1String("://images/node_selector/alert-circle-hover.png"),
                             QSize(),
@@ -311,9 +317,9 @@ NodeSelectorModelItem::Status NodeSelectorModelItem::getStatus() const
 
 bool NodeSelectorModelItem::isSyncable()
 {
-    return !isInRubbishBin() && mStatus != Status::SYNC && mStatus != Status::SYNC_PARENT &&
-           mStatus != Status::SYNC_CHILD && mStatus != Status::BACKUP &&
-           getNodeAccess() >= mega::MegaShare::ACCESS_FULL;
+    return !isTakenDown() && !isInRubbishBin() && mStatus != Status::SYNC &&
+           mStatus != Status::SYNC_PARENT && mStatus != Status::SYNC_CHILD &&
+           mStatus != Status::BACKUP && getNodeAccess() >= mega::MegaShare::ACCESS_FULL;
 }
 
 QList<QPointer<NodeSelectorModelItem>>
