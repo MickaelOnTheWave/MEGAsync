@@ -14,6 +14,9 @@ Item {
     property alias footerButtons: footerButtonsItem
 
     implicitHeight: mainLayout.height + Constants.defaultComponentSpacing
+    readonly property int imageSpacing: 40
+    readonly property int textSpacing: 8
+    readonly property int footerButtonsSpacing: 59
 
     Column {
         id: mainLayout
@@ -37,7 +40,7 @@ Item {
         }
 
         Item {
-            height: 40
+            height: imageSpacing
             width: parent.width
         }
 
@@ -54,7 +57,7 @@ Item {
         }
 
         Item {
-            height: 8
+            height: textSpacing
             width: parent.width
         }
 
@@ -70,7 +73,7 @@ Item {
         }
 
         Item {
-            height: 8
+            height: textSpacing
             width: parent.width
         }
 
@@ -87,7 +90,7 @@ Item {
         }
 
         Item {
-            height: Constants.defaultComponentSpacing
+            height: footerButtonsSpacing
             width: parent.width
         }
 

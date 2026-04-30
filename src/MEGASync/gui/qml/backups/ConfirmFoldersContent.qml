@@ -13,6 +13,7 @@ Column {
     id: root
 
     spacing: Constants.defaultComponentSpacing
+    property alias errorBanner: notificationItem
 
     ConfirmTable {
         id: confirmFoldersTable

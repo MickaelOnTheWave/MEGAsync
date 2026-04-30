@@ -14,8 +14,9 @@ Item {
 
     property alias footerButtons: footerButtonsItem
     readonly property int folderContentDesignMinimumSize: 266
+    readonly property int nonErrorStateFolderConfirmSpacing: 77
 
-    implicitHeight: layoutItem.height
+    implicitHeight: layoutItem.height + Constants.defaultComponentSpacing
 
     Column {
         id: layoutItem
@@ -26,13 +27,16 @@ Item {
             top: parent.top
         }
 
-        spacing: Constants.defaultComponentSpacing
-
         ConfirmFoldersContent {
             id: contentItem
 
             width: parent.width
             height: Math.max(folderContentDesignMinimumSize, contentItem.implicitHeight)
+        }
+
+        Item {
+            height: contentItem.errorBanner.visible ? Constants.defaultComponentSpacing : nonErrorStateFolderConfirmSpacing
+            width: parent.width
         }
 
         Item { // trick: wrapper to avoid the anchoring colision (inside the footerbuttons) with the layout manager. that's the only purpose.
