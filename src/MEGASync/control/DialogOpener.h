@@ -4,6 +4,7 @@
 #include "HighDpiResize.h"
 #include "megaapi.h"
 #include "Platform.h"
+#include "QmlDialogWrapperUtilities.h"
 #include "TokenParserWidgetManager.h"
 
 #include <QApplication>
@@ -12,6 +13,7 @@
 #include <QMessageBox>
 #include <QPointer>
 #include <QQueue>
+#include <QRect>
 #include <QWindow>
 
 #include <functional>
@@ -167,6 +169,11 @@ public:
     static QPoint initialDialogPosition(const QSize& dialogSize)
     {
         return Platform::getInstance()->initialDialogPosition(dialogSize);
+    }
+
+    static QPoint initialDialogPosition(const QSize& dialogSize, const QRect& parentGeometry)
+    {
+        return Platform::getInstance()->initialDialogPosition(dialogSize, parentGeometry);
     }
 
     template <class DialogType>
@@ -476,7 +483,10 @@ private:
         {
             QString classType = className<DialogType>();
             auto info = findSiblingDialogInfo<DialogType>(classType);
-            bool ignoreGeometry(false);
+
+            bool isQML(QmlDialogWrapperUtilities::isQML(dialog));
+
+            bool ignoreGeometry(isQML && QmlDialogWrapperUtilities::isShowWhenCreated(dialog));
             QRect geometry;
             QPoint framePosition;
             bool hasFramePosition(false);
@@ -526,7 +536,10 @@ private:
                 return nullptr;
             }
 
-            TokenParserWidgetManager::instance()->applyCurrentTheme(dialog);
+            if (!isQML)
+            {
+                TokenParserWidgetManager::instance()->applyCurrentTheme(dialog);
+            }
 
             // Use to reload the widget stylesheet. Without this line, the new stylesheet is not
             // correctly applied.
@@ -543,37 +556,53 @@ private:
             }
             else
             {
-                auto savedGeo = mSavedGeometries.value(classType, GeometryInfo());
-                if (!savedGeo.isEmpty())
+                QRect parentGeo;
+                // QML dialogs with parent are centered on its parent
+                if (isQML)
                 {
-                    geometry = savedGeo.geometry;
+                    parentGeo = QmlDialogWrapperUtilities::getParentGeometry(dialog);
                 }
 
-                if (!dialog->isVisible())
+                if (parentGeo.isValid())
                 {
-                    if (geometry.isValid())
+                    dialog->move(initialDialogPosition(dialog->geometry().size(), parentGeo));
+                    dialog->show();
+                }
+                else
+                {
+                    auto savedGeo = mSavedGeometries.value(classType, GeometryInfo());
+                    if (!savedGeo.isEmpty())
                     {
-                        // First time this is used
-                        if (savedGeo.maximized)
+                        geometry = savedGeo.geometry;
+                    }
+
+                    if (!dialog->isVisible())
+                    {
+                        if (geometry.isValid())
                         {
-                            dialog->showMaximized();
+                            // First time this is used
+                            if (savedGeo.maximized)
+                            {
+                                dialog->showMaximized();
+                            }
+                            else
+                            {
+                                dialog->setGeometry(geometry);
+                                dialog->show();
+                                if (hasFramePosition)
+                                {
+                                    dialog->move(framePosition);
+                                }
+                            }
                         }
                         else
                         {
-                            dialog->setGeometry(geometry);
+                            auto pos(initialDialogPosition(dialog->geometry().size()));
+                            auto size(dialog->geometry().size());
+                            dialog->setGeometry(
+                                QRect(pos.x(), pos.y(), size.width(), size.height()));
                             dialog->show();
-                            if (hasFramePosition)
-                            {
-                                dialog->move(framePosition);
-                            }
                         }
-                    }
-                    else
-                    {
-                        auto pos(initialDialogPosition(dialog->geometry().size()));
-                        auto size(dialog->geometry().size());
-                        dialog->setGeometry(QRect(pos.x(), pos.y(), size.width(), size.height()));
-                        dialog->show();
                     }
                 }
             }

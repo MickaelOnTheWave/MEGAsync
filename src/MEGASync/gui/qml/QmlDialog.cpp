@@ -1,6 +1,7 @@
 #include "QmlDialog.h"
 
 #include "DialogOpener.h"
+#include "QmlDialogWrapperUtilities.h"
 
 #include <QEvent>
 #include <QResizeEvent>
@@ -11,6 +12,9 @@ namespace
 const QLatin1String DEFAULT_RES_MEGA_ICON(":/images/app_ico.ico");
 const QLatin1String DEFAULT_TITLE("MEGA");
 const qreal HIDDEN_OPACITY(0.0);
+const qreal DEFAULT_VISIBLE_OPACITY(1.0);
+const int SHOW_WHEN_CREATED_FALLBACK_DELAY_MS(60);
+const int RESTORE_OPACITY_DELAY_MS(60);
 }
 
 QmlDialog::QmlDialog(QWindow* parent):
@@ -33,6 +37,35 @@ QmlDialog::QmlDialog(QWindow* parent):
             &QmlInstancesManager::instancesChanged,
             this,
             &QmlDialog::instancesManagerChanged);
+
+    mShowWhenCreatedFallbackTimer.setInterval(SHOW_WHEN_CREATED_FALLBACK_DELAY_MS);
+    mShowWhenCreatedFallbackTimer.setSingleShot(true);
+    connect(&mShowWhenCreatedFallbackTimer,
+            &QTimer::timeout,
+            this,
+            [this]()
+            {
+                if (mCenterAndRaiseAfterFirstHeightChangeEvent)
+                {
+                    placeAndRaise();
+                }
+            });
+
+    // We restore the opacity with a timer to ensure the dialog is render
+    mRestoreOpacityTimer.setInterval(RESTORE_OPACITY_DELAY_MS);
+    mRestoreOpacityTimer.setSingleShot(true);
+    connect(&mRestoreOpacityTimer,
+            &QTimer::timeout,
+            this,
+            [this]()
+            {
+                setOpacity(mPreviousOpacity > HIDDEN_OPACITY ? mPreviousOpacity :
+                                                               DEFAULT_VISIBLE_OPACITY);
+
+                // The following two lines are required by Windows (activate) and macOS (raise)
+                requestActivate();
+                raise();
+            });
 }
 
 void QmlDialog::setIconSrc(const QString& iconSrc)
@@ -63,9 +96,10 @@ void QmlDialog::readyToBeShow()
     hide();
     // Set the opacity to 0.0 to hide the window even if it is shown
     // The opacity will be set again to the real opacity
-    mPreviousOpacity = opacity();
+    mPreviousOpacity = opacity() > HIDDEN_OPACITY ? opacity() : DEFAULT_VISIBLE_OPACITY;
     setOpacity(HIDDEN_OPACITY);
     show();
+    mShowWhenCreatedFallbackTimer.start();
 }
 
 bool QmlDialog::getCloseOnEscapePressed() const
@@ -92,6 +126,10 @@ bool QmlDialog::event(QEvent* event)
     else if (event->type() == QEvent::Resize)
     {
         auto* resizeEvent = static_cast<QResizeEvent*>(event);
+        if (mCenterAndRaiseAfterFirstHeightChangeEvent)
+        {
+            mShowWhenCreatedFallbackTimer.start();
+        }
 
 #ifdef Q_OS_LINUX
         // Linux qml dialogs starts with QSize(1,1), so the first resize is invalid
@@ -105,7 +143,6 @@ bool QmlDialog::event(QEvent* event)
         if (resizeEvent && mCenterAndRaiseAfterFirstHeightChangeEvent &&
             mTrackedSize != resizeEvent->size())
         {
-            mCenterAndRaiseAfterFirstHeightChangeEvent = false;
             placeAndRaise();
         }
     }
@@ -129,11 +166,13 @@ void QmlDialog::onRequestPageFocus()
 
 void QmlDialog::placeAndRaise()
 {
-    QmlDialog::setFramePosition(DialogOpener::initialDialogPosition(geometry().size()));
-    // Now that the dialog is finally centered, show it (using the opacity)
-    setOpacity(mPreviousOpacity);
+    mShowWhenCreatedFallbackTimer.stop();
 
-    // The following two lines are required by Windows (activate) and macOS (raise)
-    QmlDialog::requestActivate();
-    QmlDialog::raise();
+    mCenterAndRaiseAfterFirstHeightChangeEvent = false;
+
+    QSize dialogSize = geometry().size();
+    auto parentGeometry = QmlDialogWrapperUtilities::getParentGeometry(this);
+    QmlDialog::setFramePosition(DialogOpener::initialDialogPosition(dialogSize, parentGeometry));
+
+    mRestoreOpacityTimer.start();
 }

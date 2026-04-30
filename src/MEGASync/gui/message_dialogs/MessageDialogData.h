@@ -11,6 +11,7 @@
 #include <functional>
 
 class MessageDialogComponent;
+class QmlDialog;
 
 struct MessageDialogButtonInfo
 {
@@ -109,6 +110,7 @@ struct MessageDialogInfo
 
     std::function<void(QPointer<MessageDialogResult>)> finishFunc;
     QWidget* parent;
+    QmlDialog* parentQml;
     QString titleText;
     QString descriptionText;
     QMessageBox::StandardButtons buttons;

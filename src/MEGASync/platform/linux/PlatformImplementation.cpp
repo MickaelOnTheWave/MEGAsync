@@ -149,6 +149,22 @@ QPoint PlatformImplementation::initialDialogPosition(const QSize& dialogSize) co
     return QPoint(xPos, yPos);
 }
 
+QPoint PlatformImplementation::initialDialogPosition(const QSize& dialogSize,
+                                                     const QRect& parentGeometry) const
+{
+    if (!parentGeometry.isValid())
+    {
+        return initialDialogPosition(dialogSize);
+    }
+
+    constexpr double CENTERING_FACTOR(0.5);
+    int xPos(parentGeometry.x() + static_cast<int>(parentGeometry.width() * CENTERING_FACTOR -
+                                                   dialogSize.width() * CENTERING_FACTOR));
+    int yPos(parentGeometry.y() + static_cast<int>(parentGeometry.height() * CENTERING_FACTOR -
+                                                   dialogSize.height() * CENTERING_FACTOR));
+    return QPoint(xPos, yPos);
+}
+
 bool PlatformImplementation::showInFolder(QString pathIn)
 {
     QString fileBrowser = getDefaultFileBrowserApp();

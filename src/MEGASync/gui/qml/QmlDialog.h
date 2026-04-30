@@ -4,6 +4,7 @@
 #include "QmlInstancesManager.h"
 
 #include <QQuickWindow>
+#include <QTimer>
 
 class QmlDialog: public QQuickWindow
 {
@@ -46,8 +47,10 @@ private:
     QString mIconSrc;
     bool mCloseOnEscapePressed = false;
     bool mCenterAndRaiseAfterFirstHeightChangeEvent = false;
+    QTimer mShowWhenCreatedFallbackTimer;
+    QTimer mRestoreOpacityTimer;
     QSize mTrackedSize;
-    qreal mPreviousOpacity;
+    qreal mPreviousOpacity = 1.0;
     QPointer<QmlInstancesManager> mInstancesManager;
 };
 
