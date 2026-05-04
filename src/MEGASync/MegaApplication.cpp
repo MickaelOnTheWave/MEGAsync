@@ -421,9 +421,70 @@ void MegaApplication::showInterface(QString)
 
 bool gCrashableForTesting = false;
 
+void MegaApplication::addFont(const QString& fontPath)
+{
+    const auto fontId = QFontDatabase::addApplicationFont(fontPath);
+#if defined(DEBUG)
+    if (fontId == -1)
+    {
+        throw std::runtime_error(
+            QString::fromUtf8("couldn't load the font : %1").arg(fontPath).toStdString());
+    }
+#else
+    Q_UNUSED(fontId);
+#endif
+}
+
+void MegaApplication::addFonts()
+{
+#if !defined(__APPLE__) && !defined(_WIN32)
+    addFont(QString::fromUtf8("://fonts/OpenSans-Regular.ttf"));
+    addFont(QString::fromUtf8("://fonts/OpenSans-Semibold.ttf"));
+
+    QFont font(QString::fromUtf8("Open Sans"), 8);
+    qApp->setFont(font);
+#endif
+
+    addFont(QString::fromUtf8("://fonts/SourceSansPro-Semibold.ttf"));
+    addFont(QString::fromUtf8("://fonts/Lato-Light.ttf"));
+    addFont(QString::fromUtf8("://fonts/Lato-Bold.ttf"));
+    addFont(QString::fromUtf8("://fonts/Lato-Regular.ttf"));
+    addFont(QString::fromUtf8("://fonts/Lato-Semibold.ttf"));
+
+    addFont(QString::fromUtf8("://fonts/Poppins-Black.ttf"));
+    addFont(QString::fromUtf8("://fonts/Poppins-BlackItalic.ttf"));
+    addFont(QString::fromUtf8("://fonts/Poppins-Bold.ttf"));
+    addFont(QString::fromUtf8("://fonts/Poppins-BoldItalic.ttf"));
+    addFont(QString::fromUtf8("://fonts/Poppins-ExtraBold.ttf"));
+    addFont(QString::fromUtf8("://fonts/Poppins-ExtraBoldItalic.ttf"));
+    addFont(QString::fromUtf8("://fonts/Poppins-ExtraLight.ttf"));
+    addFont(QString::fromUtf8("://fonts/Poppins-ExtraLightItalic.ttf"));
+    addFont(QString::fromUtf8("://fonts/Poppins-Italic.ttf"));
+    addFont(QString::fromUtf8("://fonts/Poppins-Light.ttf"));
+    addFont(QString::fromUtf8("://fonts/Poppins-LightItalic.ttf"));
+    addFont(QString::fromUtf8("://fonts/Poppins-Medium.ttf"));
+    addFont(QString::fromUtf8("://fonts/Poppins-MediumItalic.ttf"));
+    addFont(QString::fromUtf8("://fonts/Poppins-Regular.ttf"));
+    addFont(QString::fromUtf8("://fonts/Poppins-SemiBold.ttf"));
+    addFont(QString::fromUtf8("://fonts/Poppins-SemiBoldItalic.ttf"));
+    addFont(QString::fromUtf8("://fonts/Poppins-Thin.ttf"));
+    addFont(QString::fromUtf8("://fonts/Poppins-ThinItalic.ttf"));
+
+    addFont(QString::fromUtf8("://fonts/Inter-Bold.ttf"));
+    addFont(QString::fromUtf8("://fonts/Inter-Black.ttf"));
+    addFont(QString::fromUtf8("://fonts/Inter-ExtraBold.ttf"));
+    addFont(QString::fromUtf8("://fonts/Inter-ExtraLight.ttf"));
+    addFont(QString::fromUtf8("://fonts/Inter-Light.ttf"));
+    addFont(QString::fromUtf8("://fonts/Inter-Medium.ttf"));
+    addFont(QString::fromUtf8("://fonts/Inter-Regular.ttf"));
+    addFont(QString::fromUtf8("://fonts/Inter-SemiBold.ttf"));
+    addFont(QString::fromUtf8("://fonts/Inter-Thin.ttf"));
+}
+
 void MegaApplication::initStyleAndResources()
 {
     ThemeManager::instance()->init();
+    addFonts();
 
     setStyle(new MegaProxyStyle());
     QFile file(QLatin1String(":/style/WidgetsComponentsStyleSheetsSizes.css"));

@@ -649,6 +649,9 @@ private:
 
     void initStyleAndResources();
 
+    void addFont(const QString& fontPath);
+    void addFonts();
+
 private slots:
     void onFolderTransferUpdate(FolderTransferUpdateEvent event);
     void onNotificationProcessed();
