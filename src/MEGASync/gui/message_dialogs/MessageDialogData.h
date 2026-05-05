@@ -109,8 +109,8 @@ struct MessageDialogInfo
     MessageDialogInfo();
 
     std::function<void(QPointer<MessageDialogResult>)> finishFunc;
-    QWidget* parent;
-    QmlDialog* parentQml;
+    QPointer<QWidget> parent;
+    QPointer<QmlDialog> parentQml;
     QString titleText;
     QString descriptionText;
     QMessageBox::StandardButtons buttons;
