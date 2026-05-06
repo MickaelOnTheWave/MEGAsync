@@ -79,6 +79,9 @@ class BackupSyncsMenu : public SyncsMenu
 public:
     explicit BackupSyncsMenu(QWidget* parent = nullptr);
 
+protected:
+    bool eventFilter(QObject* obj, QEvent* e) override;
+
 private slots:
     void onDeviceNameSet(QString name);
 

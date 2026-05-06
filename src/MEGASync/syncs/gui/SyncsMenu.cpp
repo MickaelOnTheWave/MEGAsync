@@ -10,6 +10,7 @@
 #include "Utilities.h"
 
 #include <QCoreApplication>
+#include <QMouseEvent>
 #include <QUrl>
 
 const QLatin1String DEVICE_ICON("monitor");
@@ -246,6 +247,21 @@ BackupSyncsMenu::BackupSyncsMenu(QWidget* parent):
             &UserAttributes::DeviceNames::attributeReady,
             this,
             &BackupSyncsMenu::onDeviceNameSet);
+}
+
+bool BackupSyncsMenu::eventFilter(QObject* obj, QEvent* e)
+{
+    if (obj == mMenu && mDevNameAction &&
+        (e->type() == QEvent::MouseButtonRelease || e->type() == QEvent::MouseButtonPress ||
+         e->type() == QEvent::MouseButtonDblClick))
+    {
+        auto* mouseEvent = static_cast<QMouseEvent*>(e);
+        if (mMenu->actionAt(mouseEvent->pos()) == mDevNameAction)
+        {
+            return true;
+        }
+    }
+    return SyncsMenu::eventFilter(obj, e);
 }
 
 void BackupSyncsMenu::onDeviceNameSet(QString name)
