@@ -30,7 +30,6 @@ private:
         auto dialog = new QmlDialogWrapper<MessageDialogComponent>(parent, data);
         dialog->setShowWhenCreated();
         DialogOpener::showMessageDialog(dialog, data);
-        emit dialog->wrapper()->dataReady();
     }
 };
 
