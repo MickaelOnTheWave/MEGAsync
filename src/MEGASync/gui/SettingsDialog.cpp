@@ -339,14 +339,14 @@ void SettingsDialog::loadSettings()
     QString fullPrefix = Preferences::TRANSLATION_FOLDER + Preferences::TRANSLATION_PREFIX;
     QDirIterator it(Preferences::TRANSLATION_FOLDER);
     QStringList languages;
-    int currentIndex = -1;
+    qsizetype currentIndex = -1;
     QString currentLanguage = mPreferences->language();
     while (it.hasNext())
     {
         QString file = it.next();
         if (file.startsWith(fullPrefix))
         {
-            int extensionIndex = file.lastIndexOf(QString::fromUtf8("."));
+            auto extensionIndex = file.lastIndexOf(QString::fromUtf8("."));
             if ((extensionIndex - fullPrefix.size()) <= 0)
             {
                 continue;
@@ -367,7 +367,7 @@ void SettingsDialog::loadSettings()
         }
     }
 
-    for (int i = mLanguageCodes.size() - 1; i >= 0; i--)
+    for (auto i = mLanguageCodes.size() - 1; i >= 0; i--)
     {
         if (currentLanguage.startsWith(mLanguageCodes[i]))
         {
@@ -382,7 +382,7 @@ void SettingsDialog::loadSettings()
     }
 
     mUi->cLanguage->addItems(languages);
-    mUi->cLanguage->setCurrentIndex(currentIndex);
+    mUi->cLanguage->setCurrentIndex(static_cast<int>(currentIndex));
 
     // Color theme
     initColorTheme();
