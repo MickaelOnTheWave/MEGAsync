@@ -124,19 +124,27 @@ void QmlDialog::attachToParentWindow(QWindow* parentWindow, bool embedded)
             setModality(Qt::WindowModal);
         }
 
+#ifndef Q_OS_WIN
         // Embedded dialogs should not show maximize/minimize affordances.
         // Keep Qt::Dialog (set by the constructor) and the close button.
+        //
+        // NOTE: this is intentionally skipped on Windows. Calling setFlags()
+        // on a QQuickWindow whose native HWND already exists triggers a
+        // window recreation that loses the QML width/height bindings — the
+        // dialog flashes frameless and then collapses to a tiny pixel-sized
+        // window. transientParent + WindowModal above are enough to give us
+        // the embedded modal behavior on Windows; the fixed size is already
+        // guaranteed by the QML's minimumWidth/maximumWidth declarations,
+        // and the native dialog frame from Qt::Dialog (set in the
+        // constructor) is preserved untouched.
         Qt::WindowFlags wflags = flags();
         wflags |= Qt::Dialog;
         wflags &= ~(Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint);
-#ifdef Q_OS_WIN
-        // On Windows this hint removes the resize border for fixed-size dialogs.
-        wflags |= Qt::MSWindowsFixedSizeDialogHint;
-#endif
         if (wflags != flags())
         {
             setFlags(wflags);
         }
+#endif
     }
 }
 
