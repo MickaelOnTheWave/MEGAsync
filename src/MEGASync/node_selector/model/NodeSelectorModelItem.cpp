@@ -83,10 +83,6 @@ QList<QPointer<NodeSelectorModelItem>>
             auto child = createModelItem(std::move(node), mShowFiles, this);
             if (child->isValid())
             {
-                connect(child,
-                        &NodeSelectorModelItem::destroyed,
-                        this,
-                        &NodeSelectorModelItem::onChildDestroyed);
                 items.append(child);
             }
             else
@@ -102,6 +98,16 @@ QList<QPointer<NodeSelectorModelItem>>
 void NodeSelectorModelItem::initializeChildItems(
     const QList<QPointer<NodeSelectorModelItem>>& items)
 {
+    for (const auto& item: items)
+    {
+        if (item)
+        {
+            connect(item,
+                    &NodeSelectorModelItem::destroyed,
+                    this,
+                    &NodeSelectorModelItem::onChildDestroyed);
+        }
+    }
     mChildItems.append(items);
     mChildrenCounter = mChildItems.size();
     mRequestingChildren = false;
@@ -337,10 +343,6 @@ QList<QPointer<NodeSelectorModelItem>>
         if (child->isValid())
         {
             items.append(child);
-            connect(child,
-                    &NodeSelectorModelItem::destroyed,
-                    this,
-                    &NodeSelectorModelItem::onChildDestroyed);
         }
         else
         {
@@ -353,6 +355,16 @@ QList<QPointer<NodeSelectorModelItem>>
 
 void NodeSelectorModelItem::appendNodes(const QList<QPointer<NodeSelectorModelItem>>& items)
 {
+    for (const auto& item: items)
+    {
+        if (item)
+        {
+            connect(item,
+                    &NodeSelectorModelItem::destroyed,
+                    this,
+                    &NodeSelectorModelItem::onChildDestroyed);
+        }
+    }
     mChildItems.append(items);
     mChildrenCounter += items.size();
 }

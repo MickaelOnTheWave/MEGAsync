@@ -1679,7 +1679,16 @@ void NodeSelectorModel::onStartBeginRemoveRowsAsync(const mega::MegaHandle& hand
         auto index = findIndexByNodeHandle(handle, QModelIndex());
         if (index.isValid())
         {
-            deleteNodeFromModel(index);
+            // deleteNodeFromModel returns true only when beginRemoveRows/endRemoveRows
+            // were actually emitted. If it returns false (e.g. the item is no longer
+            // a child of its expected parent), no rowsRemoved signal will fire and the
+            // queue would otherwise stall, since RemoveNodesQueue::onRowsRemoved is
+            // what advances it.
+            if (!deleteNodeFromModel(index))
+            {
+                mRemoveNodesQueue.skipCurrentStep();
+                return;
+            }
 
             // If the loading view is set, decrease the moving number by 1
             if (isMovingNodes())
@@ -2095,56 +2104,61 @@ bool NodeSelectorModel::areAllNodesEligibleForRestore(const QList<mega::MegaHand
     return restorableItems == 0;
 }
 
-void NodeSelectorModel::deleteNodeFromModel(const QModelIndex& index)
+bool NodeSelectorModel::deleteNodeFromModel(const QModelIndex& index)
 {
     if (!index.isValid())
     {
-        return;
+        return false;
     }
     auto item = static_cast<NodeSelectorModelItem*>(index.internalPointer());
-    if (item)
+    if (!item)
     {
-        std::shared_ptr<mega::MegaNode> node = item->getNode();
-        if (node)
+        return false;
+    }
+
+    std::shared_ptr<mega::MegaNode> node = item->getNode();
+    if (!node)
+    {
+        return false;
+    }
+
+    if (mExtraSpaceAdded && mCurrentRootIndex == index.parent())
+    {
+        auto currentRowCount(rowCount(index.parent()));
+        // 2 is the result of 1 for the extra row + 1 for the row
+        // about to be removed
+        if (currentRowCount == 2)
         {
-            if (mExtraSpaceAdded && mCurrentRootIndex == index.parent())
-            {
-                auto currentRowCount(rowCount(index.parent()));
-                // 2 is the result of 1 for the extra row + 1 for the row
-                // about to be removed
-                if (currentRowCount == 2)
-                {
-                    executeRemoveExtraSpaceLogic(mCurrentRootIndex);
-                }
-            }
-
-            NodeSelectorModelItem* parent =
-                static_cast<NodeSelectorModelItem*>(index.parent().internalPointer());
-            if (parent)
-            {
-                int row = parent->indexOf(item);
-                if (row < 0)
-                {
-                    return;
-                }
-                beginRemoveRows(index.parent(), row, row);
-                mNodeRequesterWorker->lockDataMutex(true);
-                auto itemToRemove = parent->findChildNode(node);
-                mNodeRequesterWorker->lockDataMutex(false);
-                emit removeItem(itemToRemove);
-                endRemoveRows();
-            }
-            else
-            {
-                int row = index.row();
-                beginRemoveRows(index.parent(), row, row);
-                emit removeRootItem(item);
-                endRemoveRows();
-            }
-
-            emit modelModified();
+            executeRemoveExtraSpaceLogic(mCurrentRootIndex);
         }
     }
+
+    NodeSelectorModelItem* parent =
+        static_cast<NodeSelectorModelItem*>(index.parent().internalPointer());
+    if (parent)
+    {
+        int row = parent->indexOf(item);
+        if (row < 0)
+        {
+            return false;
+        }
+        beginRemoveRows(index.parent(), row, row);
+        mNodeRequesterWorker->lockDataMutex(true);
+        auto itemToRemove = parent->findChildNode(node);
+        mNodeRequesterWorker->lockDataMutex(false);
+        emit removeItem(itemToRemove);
+        endRemoveRows();
+    }
+    else
+    {
+        int row = index.row();
+        beginRemoveRows(index.parent(), row, row);
+        emit removeRootItem(item);
+        endRemoveRows();
+    }
+
+    emit modelModified();
+    return true;
 }
 
 int NodeSelectorModel::getNodeAccess(mega::MegaNode* node)

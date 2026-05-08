@@ -266,7 +266,7 @@ public:
     void setSyncSetupMode(bool value);
 
     virtual bool addNodes(QList<std::shared_ptr<mega::MegaNode>> node, const QModelIndex& parent);
-    void deleteNodeFromModel(const QModelIndex& index);
+    bool deleteNodeFromModel(const QModelIndex& index);
 
     int getNodeAccess(mega::MegaNode* node);
 
