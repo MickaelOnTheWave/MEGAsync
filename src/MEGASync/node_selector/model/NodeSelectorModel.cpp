@@ -791,6 +791,10 @@ QVariant NodeSelectorModel::data(const QModelIndex& index, int role) const
                         return item->getOwnerName() + QLatin1String(" (") + item->getOwnerEmail() +
                                QLatin1String(")");
                     }
+                    else if (item->isTakenDown())
+                    {
+                        return tr("This folder has been the subject of a takedown notice");
+                    }
                     else if (mSyncSetupMode)
                     {
                         if ((item->getStatus() == NodeSelectorModelItem::Status::SYNC) ||
@@ -813,6 +817,10 @@ QVariant NodeSelectorModel::data(const QModelIndex& index, int role) const
                 case toInt(NodeSelectorModelRoles::IS_FILE_ROLE):
                 {
                     return QVariant::fromValue(item->getNode()->isFile());
+                }
+                case toInt(NodeSelectorModelRoles::IS_TAKEN_DOWN_ROLE):
+                {
+                    return QVariant::fromValue(item->isTakenDown());
                 }
                 case toInt(NodeSelectorModelRoles::IS_SYNCABLE_FOLDER_ROLE):
                 {
@@ -877,19 +885,25 @@ Qt::ItemFlags NodeSelectorModel::flags(const QModelIndex& index) const
         NodeSelectorModelItem* item = static_cast<NodeSelectorModelItem*>(index.internalPointer());
         if (item)
         {
-            if ((mSyncSetupMode && !item->isSyncable()) ||
-                (item->getNode() && !item->getNode()->isNodeKeyDecrypted()))
+            if (item->getNode() && !item->getNode()->isNodeKeyDecrypted())
             {
                 flags &= ~(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
             }
 
             if (mAcceptDragAndDrop)
             {
-                flags |= Qt::ItemIsDropEnabled;
-
-                if (!item->isSpecialNode() && !item->isInShare())
+                if (item->isTakenDown())
                 {
-                    flags |= Qt::ItemIsDragEnabled;
+                    flags &= ~(Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled);
+                }
+                else
+                {
+                    flags |= Qt::ItemIsDropEnabled;
+
+                    if (!item->isSpecialNode() && !item->isInShare())
+                    {
+                        flags |= Qt::ItemIsDragEnabled;
+                    }
                 }
             }
         }
@@ -920,11 +934,10 @@ bool NodeSelectorModel::canDropMimeData(const QMimeData* data,
                                         int column,
                                         const QModelIndex& parent) const
 {
-    Q_UNUSED(row);
-    Q_UNUSED(column);
-
     if (action == Qt::CopyAction || action == Qt::MoveAction)
     {
+        auto dropIndex(index(row, column, parent));
+
         if (parent.isValid())
         {
             if (action == Qt::CopyAction)
@@ -933,12 +946,12 @@ bool NodeSelectorModel::canDropMimeData(const QMimeData* data,
             }
             else
             {
-                return checkDraggedMimeData(data);
+                return checkDraggedMimeData(data, dropIndex);
             }
         }
         else
         {
-            return checkDraggedMimeData(data);
+            return checkDraggedMimeData(data, dropIndex);
         }
     }
 
@@ -950,8 +963,15 @@ bool NodeSelectorModel::canDropMimeData() const
     return true;
 }
 
-bool NodeSelectorModel::checkDraggedMimeData(const QMimeData* data) const
+bool NodeSelectorModel::checkDraggedMimeData(const QMimeData* data,
+                                             const QModelIndex& dropIndex) const
 {
+    auto targetItem = getItemByIndex(dropIndex);
+    if (targetItem && targetItem->isTakenDown())
+    {
+        return false;
+    }
+
     QByteArray encodedData = data->data(MIME_DATA_INTERNAL_MOVE);
     QDataStream stream(&encodedData, QIODevice::ReadOnly);
 
@@ -1735,6 +1755,11 @@ bool NodeSelectorModel::hasChildren(const QModelIndex& parent) const
     NodeSelectorModelItem* item = static_cast<NodeSelectorModelItem*>(parent.internalPointer());
     if (item && item->getNode())
     {
+        if (item->isTakenDown())
+        {
+            return false;
+        }
+
         mNodeRequesterWorker->lockDataMutex(true);
         auto numChild = item->getNumChildren() > 0;
         mNodeRequesterWorker->lockDataMutex(false);
@@ -2684,6 +2709,11 @@ bool NodeSelectorModel::canFetchMore(const QModelIndex& parent) const
     NodeSelectorModelItem* item = static_cast<NodeSelectorModelItem*>(parent.internalPointer());
     if (item)
     {
+        if (item->isTakenDown())
+        {
+            return false;
+        }
+
         return item->canFetchMore();
     }
     else
@@ -2862,6 +2892,11 @@ QPair<QIcon, QString> NodeSelectorModel::getFolderIcon(NodeSelectorModelItem* it
 
     if (item)
     {
+        if (item->isTakenDown())
+        {
+            return qMakePair(QIcon(QStringLiteral(":/taken_down_medium")), QString());
+        }
+
         auto node = item->getNode();
 
         if (node)

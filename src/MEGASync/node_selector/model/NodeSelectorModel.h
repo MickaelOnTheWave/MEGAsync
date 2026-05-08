@@ -30,6 +30,7 @@ enum class NodeSelectorModelRoles
 {
     DATE_ROLE = Qt::UserRole,
     IS_FILE_ROLE,
+    IS_TAKEN_DOWN_ROLE,
     IS_SYNCABLE_FOLDER_ROLE,
     STATUS_ROLE,
     ACCESS_ROLE,
@@ -398,7 +399,7 @@ public:
                                  const QModelIndex& parent) const override;
     // General cases
     virtual bool canDropMimeData() const;
-    bool checkDraggedMimeData(const QMimeData* data) const;
+    bool checkDraggedMimeData(const QMimeData* data, const QModelIndex& dropIndex) const;
 
     void onRequestFinish(mega::MegaRequest* request, mega::MegaError* e);
 

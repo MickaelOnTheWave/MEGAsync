@@ -400,9 +400,11 @@ void NodeSelectorTreeViewWidgetSearch::stopSearch()
     mHasRows = false;
 }
 
-std::unique_ptr<NodeSelectorProxyModel> NodeSelectorTreeViewWidgetSearch::createProxyModel()
+std::shared_ptr<NodeSelectorProxyModel> NodeSelectorTreeViewWidgetSearch::createProxyModel()
 {
-    auto proxy = std::unique_ptr<NodeSelectorProxyModelSearch>(new NodeSelectorProxyModelSearch);
+    auto proxy =
+        std::make_shared<NodeSelectorProxyModelSearch>(getSelectType()->createProxyModel());
+
     // The search view is the only one with a real proxy model (in terms on filterAcceptsRow)
     connect(proxy.get(),
             &QAbstractItemModel::rowsInserted,

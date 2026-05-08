@@ -191,8 +191,8 @@ bool NodeSelectorModelIncomingShares::rootNodeUpdated(mega::MegaNode* node)
 
 bool NodeSelectorModelIncomingShares::canDropMimeData(const QMimeData* data,
                                                       Qt::DropAction action,
-                                                      int,
-                                                      int,
+                                                      int row,
+                                                      int column,
                                                       const QModelIndex& parent) const
 {
     if (action == Qt::CopyAction || action == Qt::MoveAction)
@@ -214,7 +214,8 @@ bool NodeSelectorModelIncomingShares::canDropMimeData(const QMimeData* data,
                         }
                         else
                         {
-                            return checkDraggedMimeData(data);
+                            auto dropIndex(index(row, column));
+                            return checkDraggedMimeData(data, dropIndex);
                         }
                     }
                 }
