@@ -1,6 +1,7 @@
 #include "DuplicatedNodeItem.h"
 
 #include "MegaApplication.h"
+#include "ThemeManager.h"
 #include "TokenParserWidgetManager.h"
 #include "ui_DuplicatedNodeItem.h"
 #include "Utilities.h"
@@ -40,10 +41,29 @@ void DuplicatedNodeItem::setDescription(const QString &description)
 
 void DuplicatedNodeItem::showLearnMore(const QString& url)
 {
-    QString moreAboutLink(QLatin1String(
-        "<a href=\"%1\"><font color=#2C5BEB;/*colorToken.link-primary*/>%2</font></a>"));
-    ui->lLearnMore->setText(moreAboutLink.arg(url,tr("Learn more")));
+    mLearnMoreUrl = url;
+    rebuildLearnMore();
     ui->lLearnMore->show();
+
+    connect(ThemeManager::instance(),
+            &ThemeManager::themeChanged,
+            this,
+            &DuplicatedNodeItem::rebuildLearnMore,
+            Qt::UniqueConnection);
+}
+
+void DuplicatedNodeItem::rebuildLearnMore()
+{
+    if (mLearnMoreUrl.isEmpty())
+    {
+        return;
+    }
+
+    const QString linkColor =
+        TokenParserWidgetManager::instance()->getColor(QLatin1String("link-primary")).name();
+
+    static const QLatin1String tpl("<a href=\"%1\" style=\"color:%2;\">%3</a>");
+    ui->lLearnMore->setText(tpl.arg(mLearnMoreUrl, linkColor, tr("Learn more")));
 }
 
 void DuplicatedNodeItem::fillUi()
