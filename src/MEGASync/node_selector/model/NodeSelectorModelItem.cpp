@@ -76,8 +76,11 @@ bool NodeSelectorModelItem::canBeRenamed() const
     return true;
 }
 
-void NodeSelectorModelItem::createChildItems(std::unique_ptr<mega::MegaNodeList> nodeList)
+QList<QPointer<NodeSelectorModelItem>>
+    NodeSelectorModelItem::createChildItems(std::unique_ptr<mega::MegaNodeList> nodeList)
 {
+    QList<QPointer<NodeSelectorModelItem>> items;
+
     if (!mNode->isFile())
     {
         for (int i = 0; i < nodeList->size(); i++)
@@ -86,21 +89,35 @@ void NodeSelectorModelItem::createChildItems(std::unique_ptr<mega::MegaNodeList>
             auto child = createModelItem(std::move(node), mShowFiles, this);
             if (child->isValid())
             {
-                connect(child,
-                        &NodeSelectorModelItem::destroyed,
-                        this,
-                        &NodeSelectorModelItem::onChildDestroyed);
-                mChildItems.append(child);
+                items.append(child);
             }
             else
             {
                 child->deleteLater();
             }
         }
-
-        mRequestingChildren = false;
-        mChildrenAreInit = true;
     }
+
+    return items;
+}
+
+void NodeSelectorModelItem::initializeChildItems(
+    const QList<QPointer<NodeSelectorModelItem>>& items)
+{
+    for (const auto& item: items)
+    {
+        if (item)
+        {
+            connect(item,
+                    &NodeSelectorModelItem::destroyed,
+                    this,
+                    &NodeSelectorModelItem::onChildDestroyed);
+        }
+    }
+    mChildItems.append(items);
+    mChildrenCounter = mChildItems.size();
+    mRequestingChildren = false;
+    mChildrenAreInit = true;
 }
 
 bool NodeSelectorModelItem::areChildrenInitialized() const
@@ -323,27 +340,46 @@ bool NodeSelectorModelItem::isSyncable()
 }
 
 QList<QPointer<NodeSelectorModelItem>>
-    NodeSelectorModelItem::addNodes(QList<std::shared_ptr<MegaNode>> nodes)
+    NodeSelectorModelItem::buildNodes(const QList<std::shared_ptr<MegaNode>>& nodes)
 {
     QList<QPointer<NodeSelectorModelItem>> items;
-    foreach(auto& node, nodes)
+    foreach(const auto& node, nodes)
     {
         auto child = createModelItem(std::unique_ptr<MegaNode>(node->copy()), mShowFiles, this);
         if (child->isValid())
         {
             items.append(child);
-            connect(child,
-                    &NodeSelectorModelItem::destroyed,
-                    this,
-                    &NodeSelectorModelItem::onChildDestroyed);
-            mChildItems.append(child);
-            mChildrenCounter++;
         }
         else
         {
             child->deleteLater();
         }
     }
+
+    return items;
+}
+
+void NodeSelectorModelItem::appendNodes(const QList<QPointer<NodeSelectorModelItem>>& items)
+{
+    for (const auto& item: items)
+    {
+        if (item)
+        {
+            connect(item,
+                    &NodeSelectorModelItem::destroyed,
+                    this,
+                    &NodeSelectorModelItem::onChildDestroyed);
+        }
+    }
+    mChildItems.append(items);
+    mChildrenCounter += items.size();
+}
+
+QList<QPointer<NodeSelectorModelItem>>
+    NodeSelectorModelItem::addNodes(QList<std::shared_ptr<MegaNode>> nodes)
+{
+    auto items = buildNodes(nodes);
+    appendNodes(items);
     return items;
 }
 

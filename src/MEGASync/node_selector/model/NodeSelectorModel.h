@@ -120,7 +120,7 @@ public slots:
     void abort();
 
 signals:
-    void nodesReady(NodeSelectorModelItem* parent);
+    void nodesReady(NodeSelectorModelItem* parent, int insertedCount);
     void megaCloudDriveRootItemCreated();
     void megaIncomingSharesRootItemsCreated();
     void megaRubbishRootItemsCreated();
@@ -138,6 +138,7 @@ private:
     bool isAborted();
     NodeSelectorModelItem* createSearchItem(mega::MegaNode* node,
                                             NodeSelectorModelItemSearch::Types typesAllowed);
+    void appendRootItems(const QList<NodeSelectorModelItem*>& items);
 
     std::atomic<bool> mShowFiles{true};
     std::atomic<bool> mShowReadOnlyFolders{true};
@@ -185,6 +186,7 @@ public:
     RemoveNodesQueue(NodeSelectorModel* model);
 
     void addStep(const mega::MegaHandle& handle);
+    void skipCurrentStep();
 
 signals:
     void startBeginRemoveRows(const mega::MegaHandle& handle);
@@ -265,7 +267,7 @@ public:
     void setSyncSetupMode(bool value);
 
     virtual bool addNodes(QList<std::shared_ptr<mega::MegaNode>> node, const QModelIndex& parent);
-    void deleteNodeFromModel(const QModelIndex& index);
+    bool deleteNodeFromModel(const QModelIndex& index);
 
     int getNodeAccess(mega::MegaNode* node);
 
@@ -472,11 +474,14 @@ protected:
     QList<QPair<mega::MegaHandle, QModelIndex>> mIndexesToBeExpanded;
 
 protected slots:
+    void beginRootItemsInsertion(int first, int last);
+    void beginChildRowsInsertion(const QModelIndex& parent, int first, int last);
     void onRootItemAdded();
 
 private slots:
-    void onChildNodesReady(NodeSelectorModelItem* parent);
+    void onChildNodesReady(NodeSelectorModelItem* parent, int insertedCount);
     void onNodesAdded(QList<QPointer<NodeSelectorModelItem>> childrenItem);
+    void cancelPendingModification();
     void onSyncStateChanged(std::shared_ptr<SyncSettings> sync);
     void resetMoveProcessing();
     void checkFinishedRequest(mega::MegaHandle handle, int errorCode);
