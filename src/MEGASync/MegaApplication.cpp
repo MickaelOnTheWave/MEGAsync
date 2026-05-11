@@ -13,7 +13,6 @@
 #include "DateTimeFormatter.h"
 #include "DeviceCentre.h"
 #include "DialogOpener.h"
-#include "DuplicatedNodeDialog.h"
 #include "EmailRequester.h"
 #include "EphemeralCredentials.h"
 #include "EventUpdater.h"
@@ -401,8 +400,10 @@ void MegaApplication::showInterface(QString)
             {
                 // clearing the file content will cause the instance that asked us to show the dialog to exit
                 showFile.close();
-                showFile.open(QIODevice::WriteOnly | QIODevice::Truncate);
-                showFile.close();
+                if (showFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
+                {
+                    showFile.close();
+                }
             }
         }
     }
