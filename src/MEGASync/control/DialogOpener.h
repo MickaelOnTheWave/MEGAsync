@@ -552,8 +552,8 @@ private:
 
             // For QML dialog wrappers, the setParent() above can recreate the
             // native handle and drop the inner QQuickWindow's transient parent
-            // binding. Re-bind it via the public slot. No-op for non-QML dialogs.
-            if (dialog && dialog->parent() && dialog->inherits("QmlDialogWrapperBase"))
+            // binding. Re-bind it via the public slot.
+            if (isQML && dialog && dialog->parent())
             {
                 QMetaObject::invokeMethod(dialog, "attachQmlToParentWindow", Qt::DirectConnection);
             }

@@ -65,6 +65,12 @@ QmlDialog::QmlDialog(QWindow* parent):
                 // The following two lines are required by Windows (activate) and macOS (raise)
                 requestActivate();
                 raise();
+
+                if (!mInitialLayoutComplete)
+                {
+                    mInitialLayoutComplete = true;
+                    emit initialLayoutCompleteChanged();
+                }
             });
 }
 
@@ -93,6 +99,12 @@ void QmlDialog::readyToBeShow()
     mCenterAndRaiseAfterFirstHeightChangeEvent = true;
     mTrackedSize = geometry().size();
 
+    if (mInitialLayoutComplete)
+    {
+        mInitialLayoutComplete = false;
+        emit initialLayoutCompleteChanged();
+    }
+
     hide();
     // Set the opacity to 0.0 to hide the window even if it is shown
     // The opacity will be set again to the real opacity
@@ -100,6 +112,11 @@ void QmlDialog::readyToBeShow()
     setOpacity(HIDDEN_OPACITY);
     show();
     mShowWhenCreatedFallbackTimer.start();
+}
+
+bool QmlDialog::initialLayoutComplete() const
+{
+    return mInitialLayoutComplete;
 }
 
 void QmlDialog::attachToParentWindow(QWindow* parentWindow, bool embedded)
@@ -172,10 +189,6 @@ bool QmlDialog::event(QEvent* event)
     else if (event->type() == QEvent::Resize)
     {
         auto* resizeEvent = static_cast<QResizeEvent*>(event);
-        if (mCenterAndRaiseAfterFirstHeightChangeEvent)
-        {
-            mShowWhenCreatedFallbackTimer.start();
-        }
 
 #ifdef Q_OS_LINUX
         // Linux qml dialogs starts with QSize(1,1), so the first resize is invalid
@@ -186,10 +199,21 @@ bool QmlDialog::event(QEvent* event)
         }
 #endif
 
-        if (resizeEvent && mCenterAndRaiseAfterFirstHeightChangeEvent &&
+        // Debounce: while we are in the post-show "place & raise" phase,
+        // every Resize event restarts the fallback timer. placeAndRaise()
+        // only runs when the timer fires (no resize for one interval),
+        // i.e. after the QML content has settled on its final size.
+        //
+        // Without this, multi-pass layouts (e.g. BackupCandidates' folder
+        // list whose height is computed in two passes) produce a visible
+        // shrink: the first Resize triggered placeAndRaise immediately,
+        // restored the opacity, and the second Resize that arrived after
+        // was already visible on screen.
+        if (mCenterAndRaiseAfterFirstHeightChangeEvent && resizeEvent &&
             mTrackedSize != resizeEvent->size())
         {
-            placeAndRaise();
+            mTrackedSize = resizeEvent->size();
+            mShowWhenCreatedFallbackTimer.start();
         }
     }
     else if (event->type() == QEvent::KeyPress)
