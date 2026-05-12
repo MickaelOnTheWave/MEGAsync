@@ -1697,8 +1697,10 @@ Qt::CaseSensitivity Utilities::isCaseSensitive(const QString& folder)
 void Utilities::createFile(const QDir& path, const QString& filename)
 {
     QFile file(path.absoluteFilePath(filename));
-    file.open(QFile::ReadWrite);
-    file.close();
+    if (file.open(QFile::ReadWrite))
+    {
+        file.close();
+    }
 }
 
 uint8_t Utilities::getFileCount(QDir path)

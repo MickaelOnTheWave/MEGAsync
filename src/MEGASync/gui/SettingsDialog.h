@@ -112,7 +112,7 @@ private slots:
     void on_lAccountType_clicked();
     void on_bUpgrade_clicked();
     void on_bMyAccount_clicked();
-    void on_bStorageDetails_clicked();
+    void onStorageDetailsClicked();
     void on_bLogout_clicked();
 
     // Security

@@ -162,7 +162,10 @@ DuplicatedRemoteItem::DuplicatedRemoteItem(QWidget *parent)
 
 DuplicatedRemoteItem::~DuplicatedRemoteItem()
 {
-    mFolderAttributes->cancel();
+    if (mFolderAttributes)
+    {
+        mFolderAttributes->cancel();
+    }
 }
 
 void DuplicatedRemoteItem::setInfo(std::shared_ptr<DuplicatedNodeInfo> info, NodeItemType type)
@@ -228,7 +231,10 @@ DuplicatedLocalItem::DuplicatedLocalItem(QWidget *parent)
 
 DuplicatedLocalItem::~DuplicatedLocalItem()
 {
-    mFolderAttributes->cancel();
+    if (mFolderAttributes)
+    {
+        mFolderAttributes->cancel();
+    }
 }
 
 void DuplicatedLocalItem::setInfo(std::shared_ptr<DuplicatedNodeInfo> info, NodeItemType type)
