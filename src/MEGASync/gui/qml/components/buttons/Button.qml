@@ -104,6 +104,7 @@ Qml.RoundButton {
 
             anchors.verticalCenter: parent.verticalCenter
             color: root.icons.colorEnabled
+            imageSize: sizes.iconSize
             visible: root.icons.busyIndicatorVisible
                         && root.icons.position === Icon.Position.LEFT
         }
@@ -143,6 +144,7 @@ Qml.RoundButton {
 
             anchors.verticalCenter: parent.verticalCenter
             color: icons.colorEnabled
+            imageSize: sizes.iconSize
             visible: root.icons.busyIndicatorVisible
                         && root.icons.position === Icon.Position.RIGHT
         }

@@ -1019,7 +1019,7 @@ void SettingsDialog::on_bMyAccount_clicked()
     Utilities::openUrl(ServiceUrls::getAccountUrl());
 }
 
-void SettingsDialog::on_bStorageDetails_clicked()
+void SettingsDialog::onStorageDetailsClicked()
 {
     MegaSyncApp->getStatsEventHandler()->sendTrackedEvent(
         AppStatsEvents::EventType::SETTINGS_DETAILS_CLICKED);

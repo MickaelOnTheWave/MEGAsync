@@ -152,7 +152,7 @@
         <file alias="arrow-up-small-thin-outline-support-success.svg">images/themed/light/arrow-up-small-thin-outline-support-success.svg</file>
         <file alias="app-icon">images/themed/light/app-icon.svg</file>
         <file alias="scanning_icon">images/themed/light/scanning_icon.svg</file>
-        <file alias="settings">images/themed/light/settings.svg</file>
+        <file alias="settings-icon">images/themed/light/settings.svg</file>
         <file alias="arrow_corner_right">images/themed/light/Stalled Issues/Path/arrow_corner_right.svg</file>
         <file alias="x_square_small_thin_outline_secondary">images/themed/light/x_square_small_thin_outline_secondary.svg</file>
         <file alias="pause_square_small_thin_outline_secondary">images/themed/light/pause_square_small_thin_outline_secondary.svg</file>

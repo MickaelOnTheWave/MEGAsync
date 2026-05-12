@@ -30,7 +30,10 @@ BackupCandidatesComponent::BackupCandidatesComponent(QObject* parent):
 
 BackupCandidatesComponent::~BackupCandidatesComponent()
 {
-    mBackupsProxyModel->deleteLater();
+    if (mBackupsProxyModel)
+    {
+        mBackupsProxyModel->deleteLater();
+    }
 }
 
 QUrl BackupCandidatesComponent::getQmlUrl()

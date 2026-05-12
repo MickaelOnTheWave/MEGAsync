@@ -117,9 +117,9 @@ InfoDialog::InfoDialog(MegaApplication* app, QWidget* parent, InfoDialog* olddia
 
     connect(ui->bTransferManager, SIGNAL(pauseResumeClicked()), this, SLOT(pauseResumeClicked()));
     connect(ui->bTransferManager,
-            SIGNAL(transferManagerClicked()),
+            &TransfersSummaryQuickWidget::transferManagerClicked,
             this,
-            SLOT(on_bTransferManager_clicked()));
+            &InfoDialog::onTransferManagerClicked);
 
     connect(ui->wSortNotifications, SIGNAL(clicked()), this, SLOT(onActualFilterClicked()));
 
@@ -1167,7 +1167,7 @@ void InfoDialog::onOverlayClicked()
     app->uploadActionClicked(AppStatsEvents::EventType::INFO_DIALOG_UPLOAD_CLICKED);
 }
 
-void InfoDialog::on_bTransferManager_clicked()
+void InfoDialog::onTransferManagerClicked()
 {
     emit userActivity();
     app->transferManagerActionClicked();
@@ -1286,7 +1286,7 @@ bool InfoDialog::eventFilter(QObject *obj, QEvent *e)
 {
     if (obj == ui->wStorageUsage && e->type() == QEvent::MouseButtonPress)
     {
-        on_bStorageDetails_clicked();
+        onStorageDetailsClicked();
         return true;
     }
 
@@ -1348,7 +1348,7 @@ bool InfoDialog::eventFilter(QObject *obj, QEvent *e)
     return QDialog::eventFilter(obj, e);
 }
 
-void InfoDialog::on_bStorageDetails_clicked()
+void InfoDialog::onStorageDetailsClicked()
 {
     MegaSyncApp->getStatsEventHandler()->sendTrackedEvent(
         AppStatsEvents::EventType::STORAGE_USAGE_CLICKED_INFO_DIALOG);

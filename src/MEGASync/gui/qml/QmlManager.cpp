@@ -64,8 +64,12 @@ void QmlManager::registerCommonQmlElements()
         0,
         "AccountStateQuickWidget",
         QString::fromUtf8("Cannot create AccountStateQuickWidget in QML"));
-    qmlRegisterUncreatableType<AppStatsEvents>("AppStatsEvents", 1, 0, "AppStatsEvents",
-                                               QString::fromUtf8("Not creatable as it is an enum type"));
+    qmlRegisterUncreatableMetaObject(AppStatsEvents::staticMetaObject,
+                                     "AppStatsEvents",
+                                     1,
+                                     0,
+                                     "AppStatsEvents",
+                                     QString::fromUtf8("Not creatable as it is an enum type"));
     qmlRegisterUncreatableType<SyncInfo>(
         "SyncInfo",
         1,
