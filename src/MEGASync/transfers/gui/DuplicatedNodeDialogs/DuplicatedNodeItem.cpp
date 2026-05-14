@@ -1,6 +1,7 @@
 #include "DuplicatedNodeItem.h"
 
 #include "MegaApplication.h"
+#include "TextDecorator.h"
 #include "ThemeManager.h"
 #include "TokenParserWidgetManager.h"
 #include "ui_DuplicatedNodeItem.h"
@@ -59,11 +60,9 @@ void DuplicatedNodeItem::rebuildLearnMore()
         return;
     }
 
-    const QString linkColor =
-        TokenParserWidgetManager::instance()->getColor(QLatin1String("link-primary")).name();
-
-    static const QLatin1String tpl("<a href=\"%1\" style=\"color:%2;\">%3</a>");
-    ui->lLearnMore->setText(tpl.arg(mLearnMoreUrl, linkColor, tr("Learn more")));
+    QString text = QStringLiteral("[A]%1[/A]").arg(tr("Learn more"));
+    Text::Link(mLearnMoreUrl).process(text);
+    ui->lLearnMore->setText(text);
 }
 
 void DuplicatedNodeItem::fillUi()
