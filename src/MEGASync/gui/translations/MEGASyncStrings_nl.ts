@@ -50,6 +50,14 @@
     </message>
 </context>
 <context>
+    <name>AccountStateQuickWidget</name>
+    <message>
+        <source>Available[BR]%1</source>
+        <translatorcomment>Tooltip text shown when hovering the remaining available area in the Account pane usage bar. Keep the [BR] line break tag. %1 will be replaced with the available storage or transfer amount. DSN-2975</translatorcomment>
+        <translation>Available[BR]%1</translation>
+    </message>
+</context>
+<context>
     <name>AccountStatusController</name>
     <message>
         <source>Your account has been disabled by your administrator. Please contact your business account administrator for further details.</source>
@@ -302,7 +310,7 @@
         <source>[A] updated %n item</source>
         <translatorcomment>Label to indicate that user [A] has updated %n items in shared folder. Placeholder [A] will be replaced by the email or full name of the user that made the update and %n with the number of removed items. CON-295</translatorcomment>
         <translation>
-            <numerusform>[A] heeft  %n item bijgewerkt</numerusform>
+            <numerusform>[A] heeft %n item bijgewerkt</numerusform>
             <numerusform>[A] heeft %n items bijgewerkt</numerusform>
         </translation>
     </message>
@@ -345,7 +353,7 @@
     <message>
         <source>Backup operation failed</source>
         <translatorcomment>Title for error dialog shown when a  backup fails.SNC-3258</translatorcomment>
-        <translation>Backup operation failed</translation>
+        <translation>Back-upbewerking is mislukt</translation>
     </message>
     <message>
         <source>Backups</source>
@@ -355,7 +363,7 @@
     <message>
         <source>Error adding backup</source>
         <translatorcomment>Title of the error message displayed when there was en error while trying to add a backup. SNC-3258</translatorcomment>
-        <translation>Error adding backup</translation>
+        <translation>Fout bij toevoegen van back-up</translation>
     </message>
     <message>
         <source>Error adding sync</source>
@@ -370,7 +378,7 @@
     <message>
         <source>Operation on backup &apos;%1&apos; failed. Reason: %2</source>
         <translatorcomment>text for error dialog shown when a  backup fails, folder path and reason are given during runtime in the placeholders.SNC-3258</translatorcomment>
-        <translation>Operation on backup ‘%1’ failed. Reason: %2</translation>
+        <translation>De bewerking op back-up ‘%1’ is mislukt. Reden: %2</translation>
     </message>
     <message>
         <source>Operation on sync &apos;%1&apos; failed. Reason: %2</source>
@@ -390,7 +398,7 @@
     <message>
         <source>Your backup can’t be removed. Reason: %1</source>
         <translatorcomment>Warning message title indicating that an error happened removing a backup. the reason is given at runtime in place of the placeholder.SNC-3258</translatorcomment>
-        <translation>Your backup can’t be removed. Reason: %1</translation>
+        <translation>Uw back-up kan niet worden verwijderd. Reden: %1</translation>
     </message>
     <message>
         <source>Your sync can&apos;t be removed. Reason: %1</source>
@@ -434,7 +442,7 @@
         <translatorcomment>Notification message to indicate that %n backups have been created. Keep %n to indicate the number of backups created. SNC-5495</translatorcomment>
         <translation>
             <numerusform>%n map was een back-up gemaakt</numerusform>
-            <numerusform>%n mappen waren een back-up van gemaakt </numerusform>
+            <numerusform>%n mappen waren een back-up van gemaakt</numerusform>
         </translation>
     </message>
     <message>
@@ -450,8 +458,7 @@
         <translatorcomment>Warning message stating that the user already has a backup created with that name. CON-468</translatorcomment>
         <translation>
             <numerusform>Een map met dezelfde naam bestaat al in uw Backups. Hernoem de nieuwe map om door te gaan met de back-up. Map naam wordt niet gewijzigd op uw computer.</numerusform>
-            <numerusform>Sommige mappen met dezelfde naam bestaan al in uw Back-ups. Hernoem de nieuwe mappen om door te gaan met de back-up. 
-Map namen worden niet gewijzigd op uw computer.</numerusform>
+            <numerusform>Sommige mappen met dezelfde naam bestaan al in uw Back-ups. Hernoem de nieuwe mappen om door te gaan met de back-up.Map namen worden niet gewijzigd op uw computer.</numerusform>
         </translation>
     </message>
     <message>
@@ -594,7 +601,7 @@ Map namen worden niet gewijzigd op uw computer.</numerusform>
     <message>
         <source>Bug report can&apos;t be submitted due to some error. Please try again or contact our support team via [A]support@mega.co.nz[/A]</source>
         <translatorcomment>Warning message shown when some error occurs during uploading a bug report.</translatorcomment>
-        <translation>Uw probleem kan niet worden geüpload vanwege een fout. Probeer het later opnieuw of neem contact op met ons ondersteuningsteam via [A]support@mega.io[/A] als het probleem zich blijft voordoen. </translation>
+        <translation>Uw probleem kan niet worden geüpload vanwege een fout. Probeer het later opnieuw of neem contact op met ons ondersteuningsteam via [A]support@mega.io[/A] als het probleem zich blijft voordoen.</translation>
     </message>
     <message>
         <source>Bug report is uploading, it may take a few minutes</source>
@@ -622,6 +629,11 @@ Map namen worden niet gewijzigd op uw computer.</numerusform>
         <translation>Omschrijf het probleem</translation>
     </message>
     <message>
+        <source>Describe the problem *</source>
+        <translatorcomment>Label to indicate the description input field of form bug report. The user will fill it with a description of the bug and any specific detail that wants to be included.  SNC-6268</translatorcomment>
+        <translation>Describe the problem *</translation>
+    </message>
+    <message>
         <source>Error on submitting bug report</source>
         <translatorcomment>Error message shown when some error occurs during uploading a bug report.</translatorcomment>
         <translation>Fout tijdens het uploaden van het gerapporteerde probleem.</translation>
@@ -637,6 +649,11 @@ Map namen worden niet gewijzigd op uw computer.</numerusform>
         <translation>Beschrijf duidelijk het probleem dat u tegenkwam. Hoe meer informatie u verstrekt, hoe makkelijker het voor ons zal zijn om dit op te lossen. Uw inzending wordt beoordeeld door ons ontwikkelteam.</translation>
     </message>
     <message>
+        <source>Please describe your issue in detail. Must be at least 30 characters.</source>
+        <translatorcomment>Validation error shown when the reported issue description does not reach the minimum required length. SNC-6268</translatorcomment>
+        <translation>Please describe your issue in detail. Must be at least 30 characters.</translation>
+    </message>
+    <message>
         <source>Please try again later or contact our support team via [A]support@mega.co.nz[/A] if the problem persists.</source>
         <translatorcomment>Warning informative message shown when the user tries to send two bug reports in under 10 mins.con-364</translatorcomment>
         <translation>Probeer het later opnieuw of neem contact op met ons ondersteunde team via [A]support@mega.io[/A] als het probleem zich blijft voordoen.</translation>
@@ -645,6 +662,11 @@ Map namen worden niet gewijzigd op uw computer.</numerusform>
         <source>Please wait until the current upload is completed.</source>
         <translatorcomment>Informative message shown to the user to inform that needs to wait until the current bug report upload is completed to start a new one bug report.</translatorcomment>
         <translation>Wacht tot het huidige uploaden is voltooid.</translation>
+    </message>
+    <message>
+        <source>Report issue</source>
+        <translatorcomment>Title of the dialog used to send bug reports to support team. SNC-6268</translatorcomment>
+        <translation>Report issue</translation>
     </message>
     <message>
         <source>Submit</source>
@@ -1318,8 +1340,8 @@ Map namen worden niet gewijzigd op uw computer.</numerusform>
         <source>[A] added %n item</source>
         <translatorcomment>Label to indicate that [A] has added %n items to a shared folder. Placeholder [A] will be replaced by email of the user that made the additions and %n with the number of added items.</translatorcomment>
         <translation>
-            <numerusform>[A] heeft %n item toegevoegd </numerusform>
-            <numerusform>[A]heeft %n items toegevoegd </numerusform>
+            <numerusform>[A] heeft %n item toegevoegd</numerusform>
+            <numerusform>[A]heeft %n items toegevoegd</numerusform>
         </translation>
     </message>
     <message>
@@ -1336,7 +1358,7 @@ Map namen worden niet gewijzigd op uw computer.</numerusform>
         <source>[A] updated %n item</source>
         <translatorcomment>Label to indicate that user [A] has updated %n items in shared folder. Placeholder [A] will be replaced by the email or full name of the user that made the update and %n with the number of removed items. CON-295</translatorcomment>
         <translation>
-            <numerusform>[A] heeft  %n item bijgewerkt</numerusform>
+            <numerusform>[A] heeft %n item bijgewerkt</numerusform>
             <numerusform>[A] heeft %n items bijgewerkt</numerusform>
         </translation>
     </message>
@@ -1467,12 +1489,12 @@ Map namen worden niet gewijzigd op uw computer.</numerusform>
     <message>
         <source>A file named [A] already exists at this destination</source>
         <translatorcomment>Dialog text shown when a file with the same name has been found on the cloud. [A] file name</translatorcomment>
-        <translation>Er bestaat al een bestand[A] met de naam op deze bestemming</translation>
+        <translation>Er bestaat al een bestand[A] met de naam op deze bestemming.</translation>
     </message>
     <message>
         <source>A folder named [A] already exists at this destination</source>
         <translatorcomment>Dialog text shown when a folder with the same name has been found on the cloud. [A] folder name</translatorcomment>
-        <translation>Er bestaat al een map met de naam[A] op deze bestemming</translation>
+        <translation>Er bestaat al een map met de naam[A] op deze bestemming.</translation>
     </message>
     <message numerus="yes">
         <source>Apply to all %1 duplicates</source>
@@ -1711,7 +1733,7 @@ Map namen worden niet gewijzigd op uw computer.</numerusform>
     <message>
         <source>Files beginning with “%1” will be included on this sync.</source>
         <translatorcomment>Body for confirmation dialog before removing sync exclusion rule, the variable is for file name.SAT-449</translatorcomment>
-        <translation>Bestanden die beginnen met  “%1”worden opgenomen in deze synchronisatie.</translation>
+        <translation>Bestanden die beginnen met “%1”worden opgenomen in deze synchronisatie.</translation>
     </message>
     <message>
         <source>Files beginning with:</source>
@@ -1801,7 +1823,7 @@ Map namen worden niet gewijzigd op uw computer.</numerusform>
     <message>
         <source>Folders beginning with “%1” will be included on this sync.</source>
         <translatorcomment>Body for confirmation dialog before removing sync exclusion rule, variable is for folder name.SAT-449</translatorcomment>
-        <translation>Mappen die beginnen met “%1” worden opgenomen in deze synchronisatie</translation>
+        <translation>Mappen die beginnen met “%1” worden opgenomen in deze synchronisatie.</translation>
     </message>
     <message>
         <source>Folders beginning with:</source>
@@ -2291,7 +2313,7 @@ Controleer uw e-mailinbox voor instructies over het ontgrendelen van uw account 
     <message>
         <source>Available storage:</source>
         <translatorcomment>Label indicating that the number in the right is the available storage CON-467</translatorcomment>
-        <translation>Beschikbare opslag…</translation>
+        <translation>Beschikbare opslag:</translation>
     </message>
     <message>
         <source>Business</source>
@@ -4456,7 +4478,7 @@ ververs de weergave.</translation>
     <message>
         <source>It will be moved to the SyncDebris folder on the MEGA Rubbish Bin along with its versions.[BR]You will be able to retrieve the file and its versions from there.[/BR]</source>
         <translatorcomment>Confirmation message for sync stall solve option, [BR] is for line break .SNC-2565</translatorcomment>
-        <translation>Het wordt verplaatst naar de map SyncDebris in de MEGA-Prullenbak.[BR] U kunt het bestand en alle bestandsversies daar vandaan herstellen[/BR].</translation>
+        <translation>Het wordt verplaatst naar de map SyncDebris in de MEGA-Prullenbak.[BR] U kunt het bestand en alle bestandsversies daar vandaan herstellen.[/BR]</translation>
     </message>
     <message>
         <source>It will be moved to the SyncDebris folder on the MEGA Rubbish Bin.[BR]You will be able to retrieve the folder from there.[/BR]</source>
@@ -4957,6 +4979,11 @@ Voer een andere naam in.</translation>
         <translatorcomment>Secondary text of a messagebox when restoring some items (files and folders) in the Cloud Drive dialog failed. SNC-426</translatorcomment>
         <translation>De items konden niet worden hersteld. Probeer het later nog eens.</translation>
     </message>
+    <message>
+        <source>This folder has been the subject of a takedown notice</source>
+        <translatorcomment>Tooltip to explain the user that the node has been blocked due to a takedown notice. SNC-5350</translatorcomment>
+        <translation>This folder has been the subject of a takedown notice</translation>
+    </message>
 </context>
 <context>
     <name>NodeSelectorTreeView</name>
@@ -4964,6 +4991,11 @@ Voer een andere naam in.</translation>
         <source>Copy</source>
         <translatorcomment>Contextual menu text that appears when we right click on a folder/file on node selector. It copy the selected nodes (files or folders), waiting for the paste action. SAT-426</translatorcomment>
         <translation>Kopiëren</translation>
+    </message>
+    <message>
+        <source>Dispute takedown</source>
+        <translatorcomment>Contextual menu text that appears when we right click on a taken-down item on node selector. It opens the takedown dispute page. SNC-5350</translatorcomment>
+        <translation>Dispute takedown</translation>
     </message>
     <message>
         <source>Download</source>
@@ -5098,7 +5130,7 @@ Voer een andere naam in.</translation>
         <source>Move %n items to Rubbish bin?</source>
         <translatorcomment>Main text of the confirmation messagebox to move some items (files or folders) pto the rubbish bin. %n is the number of items to delete. CON-334</translatorcomment>
         <translation>
-            <numerusform> %n item verplaatsen naar de Prullenbak?</numerusform>
+            <numerusform>%n item verplaatsen naar de Prullenbak?</numerusform>
             <numerusform>%n items verplaatsen naar de Prullenbak?</numerusform>
         </translation>
     </message>
@@ -5108,9 +5140,19 @@ Voer een andere naam in.</translation>
         <translation>Nieuwe map</translation>
     </message>
     <message>
+        <source>No folders to select</source>
+        <translatorcomment>Title on the view when there are no syncable folders in a folder. SNC-6358</translatorcomment>
+        <translation>No folders to select</translation>
+    </message>
+    <message>
         <source>Ok</source>
         <translatorcomment>Button text to accept and close the dialog</translatorcomment>
         <translation>OK</translation>
+    </message>
+    <message>
+        <source>Only folders can be synced</source>
+        <translatorcomment>Message on the view when there are no syncable folders in a folder. SNC-6358</translatorcomment>
+        <translation>Only folders can be synced</translation>
     </message>
     <message numerus="yes">
         <source>You are about to permanently delete %n file. Would you like to proceed?</source>
@@ -5268,6 +5310,11 @@ Voer een andere naam in.</translation>
         <translation>Toegevoegde of verwijderde bestanden</translation>
     </message>
     <message>
+        <source>Completed transfers</source>
+        <translatorcomment>Notification category for completed transfers notifications. SNC-6292</translatorcomment>
+        <translation>Completed transfers</translation>
+    </message>
+    <message>
         <source>Completed uploads and downloads</source>
         <translatorcomment>Title of a checkbox for disconnectig completed transfer notifications</translatorcomment>
         <translation>Voltooide uploads en downloads</translation>
@@ -5276,6 +5323,11 @@ Voer een andere naam in.</translation>
         <source>Contacts</source>
         <translatorcomment>Notification category for contact notifications</translatorcomment>
         <translation>Contacten</translation>
+    </message>
+    <message>
+        <source>Desktop notifications</source>
+        <translatorcomment>Notification category for deskltop notifications. SNC-6292</translatorcomment>
+        <translation>Desktop notifications</translation>
     </message>
     <message>
         <source>Info</source>
@@ -5553,7 +5605,7 @@ Voer een andere naam in.</translation>
     <message>
         <source>Creating account…</source>
         <translatorcomment>Status text displayed in the footer of the page CON-466</translatorcomment>
-        <translation>Account creëren</translation>
+        <translation>Account creëren…</translation>
     </message>
     <message>
         <source>Data from your device will automatically and consistently back up to MEGA in real-time. Files deleted from your computer will be deleted from MEGA.</source>
@@ -6207,9 +6259,9 @@ Voer een andere naam in.</translation>
 - Bug fixes and performance improvements.
 </source>
         <translatorcomment>Change log for version 6.3.0. SNC-6330</translatorcomment>
-        <translation>- Improve conflict resolution.
-- Improve device name handling.
-- Bug fixes and performance improvements.</translation>
+        <translation>- Verbeterde conflictoplossing
+- Verbeterde afhandeling van apparaatnamen
+- Bugfixes en prestatieverbeteringen.</translation>
     </message>
     <message>
         <source>- Improved reliability for problematic graphics drivers on Windows.
@@ -6219,6 +6271,16 @@ Voer een andere naam in.</translation>
         <translation>- Verbeterde betrouwbaarheid van problematische grafische stuurprogramma&apos;s op Windows
 - Kleine bugfixes en prestatieverbeteringen
 </translation>
+    </message>
+    <message>
+        <source>- Rename upload conflicts and duplicate same-folder items more easily.
+- Cloud Drive, sync, backup, and settings dialogs are clearer and more consistent.
+- Bug fixes and performance improvements.
+</source>
+        <translatorcomment>Change log for version 6.4.0. SNC-6468</translatorcomment>
+        <translation>- Rename upload conflicts and duplicate same-folder items more easily.
+- Cloud Drive, sync, backup, and settings dialogs are clearer and more consistent.
+- Bug fixes and performance improvements.</translation>
     </message>
 </context>
 <context>
@@ -6257,6 +6319,11 @@ Voer een andere naam in.</translation>
         <translation>Geen Proxy</translation>
     </message>
     <message>
+        <source>Password</source>
+        <translatorcomment>Section title for Password change in Security pane. SNC-6293</translatorcomment>
+        <translation>Password</translation>
+    </message>
+    <message>
         <source>Password:</source>
         <translatorcomment>Label to indicate the password of the proxy that is being configured.</translatorcomment>
         <translation>Wachtwoord:</translation>
@@ -6290,6 +6357,11 @@ Voer een andere naam in.</translation>
         <source>Server:</source>
         <translatorcomment>Label to indicate the server name/ip of the proxy that is being configured.</translatorcomment>
         <translation>Server:</translation>
+    </message>
+    <message>
+        <source>Username</source>
+        <translatorcomment>Label to indicate the username of the proxy that is being configured. SNC-6293</translatorcomment>
+        <translation>Username</translation>
     </message>
     <message>
         <source>Username:</source>
@@ -6600,7 +6672,7 @@ Wilt u deze toch verwijderen?</translation>
     <message>
         <source>Show </source>
         <translatorcomment>Contextual menu from file list headers that allow to enable or disable diferent columns (size, type, data modified)</translatorcomment>
-        <translation>Weergeven</translation>
+        <translation>Weergeven </translation>
     </message>
     <message>
         <source>Show &amp;hidden files</source>
@@ -6976,6 +7048,16 @@ Wilt u deze toch verwijderen?</translation>
         <translation>%1 (lokale cashe)</translation>
     </message>
     <message>
+        <source>(Max. 90% of available bandwidth)</source>
+        <translatorcomment>Helper text shown when automatic upload rate limit is selected in Network pane. DSN-2979</translatorcomment>
+        <translation>(Max. 90% of available bandwidth)</translation>
+    </message>
+    <message>
+        <source>About MEGA</source>
+        <translatorcomment>Button label that opens the About MEGA dialog from the Settings window footer. Keep as short as possible. DSN-2976</translatorcomment>
+        <translation>About MEGA</translation>
+    </message>
+    <message>
         <source>Account</source>
         <translatorcomment>Tab label of Account dialog. Max 15 characters.</translatorcomment>
         <translation>Account</translation>
@@ -6989,6 +7071,11 @@ Wilt u deze toch verwijderen?</translation>
         <source>Are you sure?</source>
         <translatorcomment>Warning message second part asking if you are sure about continuing with the logout.</translatorcomment>
         <translation>Wilt u uitloggen?</translation>
+    </message>
+    <message>
+        <source>Auto</source>
+        <translatorcomment>Label to indicate that management of the upload rate limit is automatic. DSN-2979</translatorcomment>
+        <translation>Auto</translation>
     </message>
     <message>
         <source>Backup</source>
@@ -7021,6 +7108,11 @@ Wilt u deze toch verwijderen?</translation>
         <translation>Wachtwoord wijzigen</translation>
     </message>
     <message>
+        <source>Change Permissions</source>
+        <translatorcomment>Button label in File Management pane to open the dialog for changing default permissions for new folders and files. Keep as short as possible. DSN-2978</translatorcomment>
+        <translation>Change Permissions</translation>
+    </message>
+    <message>
         <source>Change Settings…</source>
         <translatorcomment>Button label text for Bandwidth and Proxy settings in Network pane.</translatorcomment>
         <translation>Instellingen wijzigen…</translation>
@@ -7044,6 +7136,11 @@ Wilt u deze toch verwijderen?</translation>
         <source>Clear remote backup</source>
         <translatorcomment>Title label for the warning to the user before clearing the remote sync cache. Keep as short as possible.</translatorcomment>
         <translation>Wis externe back-up</translation>
+    </message>
+    <message>
+        <source>Control who can access new folders and files created in the app, whether it’s just you, your group, or everyone on this device.</source>
+        <translatorcomment>Descriptive text in File Management pane explaining the permissions section for new folders and files. DSN-2978</translatorcomment>
+        <translation>Control who can access new folders and files created in the app, whether it’s just you, your group, or everyone on this device.</translation>
     </message>
     <message>
         <source>Data temporarily unavailable</source>
@@ -7079,6 +7176,11 @@ Wilt u deze toch verwijderen?</translation>
         <source>Do you want to delete your remote backup now?</source>
         <translatorcomment>Confirmation prompt for the remote sync cache clear action message box.</translatorcomment>
         <translation>Weet u zeker dat u uw externe back-up nu wilt verwijderen?</translation>
+    </message>
+    <message>
+        <source>Download rate limit</source>
+        <translatorcomment>Section title for the download speed limit controls in Network pane. DSN-2979</translatorcomment>
+        <translation>Download rate limit</translation>
     </message>
     <message>
         <source>Download rate limit:</source>
@@ -7126,6 +7228,11 @@ Wilt u deze toch verwijderen?</translation>
         <translation>Het exporteren en bewaren van de Herstelsleutel op een veilige locatie stelt u in staat om een nieuw wachtwoord in te stellen zonder het verlies van gegevens.</translation>
     </message>
     <message>
+        <source>File management</source>
+        <translatorcomment>Title for the Settings -&gt; File Management pane tab button. Keep as short as possible. DSN-2978</translatorcomment>
+        <translation>File management</translation>
+    </message>
+    <message>
         <source>File versions</source>
         <translatorcomment>Section title label for File versions settings in General pane.</translatorcomment>
         <translation>Bestandsversies</translation>
@@ -7166,6 +7273,11 @@ Wilt u deze toch verwijderen?</translation>
         <translation>Rapporteer probleem</translation>
     </message>
     <message>
+        <source>KB/s</source>
+        <translatorcomment>Unit label for kilobytes per second used in Network pane rate limit controls. DSN-2979</translatorcomment>
+        <translation>KB/s</translation>
+    </message>
+    <message>
         <source>Language</source>
         <translatorcomment>Label to let the user select the desired language for the application using a dropdown menu.</translatorcomment>
         <translation>Taal</translation>
@@ -7179,6 +7291,11 @@ Wilt u deze toch verwijderen?</translation>
         <source>Learn more</source>
         <translatorcomment>Underline link label to open a help.mega.io article.CON-681</translatorcomment>
         <translation>Leer meer</translation>
+    </message>
+    <message>
+        <source>Limit to:</source>
+        <translatorcomment>Label for the custom rate limit input in Network pane. DSN-2979</translatorcomment>
+        <translation>Limit to:</translation>
     </message>
     <message>
         <source>Local folder with a backup of files deleted in MEGA</source>
@@ -7231,9 +7348,19 @@ Wilt u deze toch verwijderen?</translation>
         <translation>Meldingen</translation>
     </message>
     <message>
+        <source>Number of connections per transfer</source>
+        <translatorcomment>Section title for the setting that controls how many connections each transfer uses in Network pane. DSN-2979</translatorcomment>
+        <translation>Number of connections per transfer</translation>
+    </message>
+    <message>
         <source>Password</source>
         <translatorcomment>Section title for Password change in Security pane.</translatorcomment>
         <translation>Wachtwoord</translation>
+    </message>
+    <message>
+        <source>Permissions for new folders and files</source>
+        <translatorcomment>Section title for the file and folder permissions settings in File Management pane. DSN-2978</translatorcomment>
+        <translation>Permissions for new folders and files</translation>
     </message>
     <message>
         <source>Please let us know if you encounter any issues. Help us by providing as much detail as possible.</source>
@@ -7248,6 +7375,11 @@ Wilt u deze toch verwijderen?</translation>
     <message>
         <source>Proxies</source>
         <translatorcomment>Section title text for the Proxy summary text and actions in Network pane.</translatorcomment>
+        <translation>Proxy</translation>
+    </message>
+    <message>
+        <source>Proxy</source>
+        <translatorcomment>Section title text for the Proxy summary text and actions in Network pane. DSN-2979</translatorcomment>
         <translation>Proxy</translation>
     </message>
     <message>
@@ -7279,6 +7411,11 @@ Wilt u deze toch verwijderen?</translation>
         <source>Session history</source>
         <translatorcomment>Button label text for opening account login history in MEGA online app in Security pane. Keep as short as possible.</translatorcomment>
         <translation>Sessie geschiedenis</translation>
+    </message>
+    <message>
+        <source>Sets the number of connections used for each transfer. Doesn’t affect how many transfers run in parallel.</source>
+        <translatorcomment>Descriptive text for the number of connections per transfer setting in Network pane. DSN-2979</translatorcomment>
+        <translation>Sets the number of connections used for each transfer. Doesn’t affect how many transfers run in parallel.</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -7323,7 +7460,7 @@ Wilt u deze toch verwijderen?</translation>
     <message>
         <source>Synchronizations will stop working.</source>
         <translatorcomment>Warning message displayed on logout if there are active syncs (not backups)</translatorcomment>
-        <translation>Synchronisaties worden uitgeschakeld</translation>
+        <translation>Synchronisaties worden uitgeschakeld.</translation>
     </message>
     <message>
         <source>Theme</source>
@@ -7349,6 +7486,11 @@ Wilt u deze toch verwijderen?</translation>
         <source>Upgrade</source>
         <translatorcomment>Button label to let the user upgrade the account. String as short as possible.</translatorcomment>
         <translation>Upgraden</translation>
+    </message>
+    <message>
+        <source>Upload rate limit</source>
+        <translatorcomment>Section title for the upload speed limit controls in Network pane. DSN-2979</translatorcomment>
+        <translation>Upload rate limit</translation>
     </message>
     <message>
         <source>Upload rate limit:</source>
@@ -7416,6 +7558,104 @@ Wilt u deze toch verwijderen?</translation>
         <source>Auto</source>
         <translatorcomment>Label to indicate that proxy settings are on auto detec mode. SNC-3076</translatorcomment>
         <translation>Automatisch</translation>
+    </message>
+</context>
+<context>
+    <name>SettingsStrings</name>
+    <message>
+        <source>Available</source>
+        <translatorcomment>Legend label shown in the Account pane usage bar for the remaining available segment. Keep as short as possible. DSN-2975</translatorcomment>
+        <translation>Available</translation>
+    </message>
+    <message>
+        <source>Available[BR]%1</source>
+        <translatorcomment>Tooltip text shown when hovering the remaining available area in the Account pane usage bar. Keep the [BR] line break tag. %1 will be replaced with the available storage or transfer amount. DSN-2975</translatorcomment>
+        <translation>Available[BR]%1</translation>
+    </message>
+    <message>
+        <source>Backups</source>
+        <translatorcomment>Legend label shown in the Account pane usage bar for the Backups segment. Keep as short as possible. DSN-2975</translatorcomment>
+        <translation>Backups</translation>
+    </message>
+    <message>
+        <source>Backups[BR]%1</source>
+        <translatorcomment>Tooltip text shown when hovering the Backups segment in the Account pane usage bar. Keep the [BR] line break tag. %1 will be replaced with the storage amount. DSN-2975</translatorcomment>
+        <translation>Backups[BR]%1</translation>
+    </message>
+    <message>
+        <source>Buy more storage</source>
+        <translatorcomment>Button label shown in the Account pane warning banner to let the user upgrade storage. Keep as short as possible. DSN-2975</translatorcomment>
+        <translation>Buy more storage</translation>
+    </message>
+    <message>
+        <source>Cloud Drive</source>
+        <translatorcomment>Legend label shown in the Account pane usage bar for the Cloud Drive segment. Keep as short as possible. DSN-2975</translatorcomment>
+        <translation>Cloud drive</translation>
+    </message>
+    <message>
+        <source>Cloud Drive[BR]%1</source>
+        <translatorcomment>Tooltip text shown when hovering the Cloud Drive segment in the Account pane usage bar. Keep the [BR] line break tag. %1 will be replaced with the storage amount. DSN-2975</translatorcomment>
+        <translation>Cloud Drive[BR]%1</translation>
+    </message>
+    <message>
+        <source>Consider upgrading to avoid interruptions to uploads and synchronisation.</source>
+        <translatorcomment>Warning description shown in the Account pane when the account storage is nearly full. DSN-2975</translatorcomment>
+        <translation>Consider upgrading to avoid interruptions to uploads and synchronisation.</translation>
+    </message>
+    <message>
+        <source>Data temporarily unavailable</source>
+        <translatorcomment>Fallback text shown in the Account pane when storage or transfer data could not be loaded. DSN-2975</translatorcomment>
+        <translation>Data temporarily unavailable</translation>
+    </message>
+    <message>
+        <source>Rubbish Bin</source>
+        <translatorcomment>Legend label shown in the Account pane usage bar for the Rubbish Bin segment. Keep as short as possible. DSN-2975</translatorcomment>
+        <translation>Rubbish Bin</translation>
+    </message>
+    <message>
+        <source>Rubbish Bin[BR]%1</source>
+        <translatorcomment>Tooltip text shown when hovering the Rubbish Bin segment in the Account pane usage bar. Keep the [BR] line break tag. %1 will be replaced with the storage amount. DSN-2975</translatorcomment>
+        <translation>Rubbish Bin[BR]%1</translation>
+    </message>
+    <message>
+        <source>Storage Space</source>
+        <translatorcomment>Section title for account storage details in the Account pane. DSN-2975</translatorcomment>
+        <translation>Storage Space</translation>
+    </message>
+    <message>
+        <source>Transfers</source>
+        <translatorcomment>Section title for transfer usage details in the Account pane. DSN-2975</translatorcomment>
+        <translation>Transfers</translation>
+    </message>
+    <message>
+        <source>Transfers[BR]%1</source>
+        <translatorcomment>Tooltip text shown when hovering the Transfers segment in the Account pane usage bar. Keep the [BR] line break tag. %1 will be replaced with the transfer amount. DSN-2975</translatorcomment>
+        <translation>Transfers[BR]%1</translation>
+    </message>
+    <message>
+        <source>Uploads are disabled and folder synchronisation is paused.</source>
+        <translatorcomment>Warning description shown in the Account pane when the account storage is full. DSN-2975</translatorcomment>
+        <translation>Uploads are disabled and folder synchronisation is paused.</translation>
+    </message>
+    <message>
+        <source>Versions</source>
+        <translatorcomment>Legend label shown in the Account pane usage bar for the Versions segment. Keep as short as possible. DSN-2975</translatorcomment>
+        <translation>Versions</translation>
+    </message>
+    <message>
+        <source>Versions[BR]%1</source>
+        <translatorcomment>Tooltip text shown when hovering the Versions segment in the Account pane usage bar. Keep the [BR] line break tag. %1 will be replaced with the storage amount. DSN-2975</translatorcomment>
+        <translation>Versions[BR]%1</translation>
+    </message>
+    <message>
+        <source>Your MEGA account is full</source>
+        <translatorcomment>Warning title shown in the Account pane when the account storage is full. DSN-2975</translatorcomment>
+        <translation>Your MEGA account is full</translation>
+    </message>
+    <message>
+        <source>Your MEGA account is nearly full</source>
+        <translatorcomment>Warning title shown in the Account pane when the account storage is close to full. DSN-2975</translatorcomment>
+        <translation>Your MEGA account is nearly full</translation>
     </message>
 </context>
 <context>
@@ -8321,7 +8561,7 @@ Vernieuw de lijst.</translation>
     <message>
         <source>Invalid remote path.</source>
         <translatorcomment>The selected remote path for the sync creation is invalid</translatorcomment>
-        <translation>Deze MEGA-map kan niet worden gesynchroniseerd.</translation>
+        <translation>Deze MEGA-map kan niet worden gesynchroniseerd </translation>
     </message>
     <message>
         <source>This folder is already being synced.</source>
@@ -8356,17 +8596,17 @@ Vernieuw de lijst.</translation>
     <message>
         <source>Unable to create sync as selected folder is not valid. Try again.</source>
         <translatorcomment>Warning message indicating that a folder can&apos;t be synced because the local folder is invalid. SNC-3258</translatorcomment>
-        <translation>Unable to create sync as selected folder is not valid. Try again.</translation>
+        <translation>Synchronisatie mislukt omdat de geselecteerde map ongeldig is. Probeer het opnieuw.</translation>
     </message>
     <message>
         <source>Unable to create sync. For further information, contact [A]Support[/A].</source>
         <translatorcomment>Warning message indicating that a folder can&apos;t be synced. SNC-3258</translatorcomment>
-        <translation>Unable to create sync. For further information, contact [A]Support[/A].</translation>
+        <translation>Synchronisatie mislukt. Neem voor meer informatie contact op met [A]Support[/A].</translation>
     </message>
     <message>
         <source>Unable to create sync. Try again and if issue continues, contact [A]Support[/A].</source>
         <translatorcomment>Warning message indicating that a folder can&apos;t be synced. SNC-3258</translatorcomment>
-        <translation>Unable to create sync. Try again and if issue continues, contact [A]Support[/A].</translation>
+        <translation>Synchronisatie mislukt. Probeer het opnieuw en neem contact op met [A]Support[/A] als het probleem aanhoudt.</translation>
     </message>
     <message>
         <source>You can&apos;t backup this folder as it contains backed up folders.</source>
@@ -8391,7 +8631,7 @@ Vernieuw de lijst.</translation>
     <message>
         <source>You don&apos;t have enough permissions for this remote folder.</source>
         <translatorcomment>Warning message indicating that a folder can´t be synced as it the remote folder is an incoming share and the current user doesn´t have enought permisions</translatorcomment>
-        <translation>U heeft geen volledige toegang tot deze gedeelde map en kunt deze niet synchroniseren.</translation>
+        <translation>U heeft geen volledige toegang tot deze gedeelde map en kunt deze niet synchroniseren </translation>
     </message>
 </context>
 <context>
@@ -8652,7 +8892,7 @@ Please, ensure that you don&apos;t use characters like &apos;\&apos; &apos;/&apo
     <message>
         <source>Error removing sync</source>
         <translatorcomment>Error message dialog title (failed to remove a sync).SNC-3258</translatorcomment>
-        <translation>Error removing sync</translation>
+        <translation>Fout bij verwijderen van synchronisatie</translation>
     </message>
     <message>
         <source>Operation on sync &apos;%1&apos; failed. Reason: %2</source>
@@ -8787,7 +9027,7 @@ Please, ensure that you don&apos;t use characters like &apos;\&apos; &apos;/&apo
     <message>
         <source>%1 folder doesn&apos;t exist</source>
         <translatorcomment>Error message indicating that the selected folder doesn´t exist anymore. CON-467</translatorcomment>
-        <translation>De map “%1”  bestaat niet</translation>
+        <translation>De map “%1” bestaat niet</translation>
     </message>
     <message>
         <source>Folder can&apos;t be synced as it can&apos;t be located. It may have been moved or deleted, or you might not have access.</source>
@@ -8839,8 +9079,8 @@ Please, ensure that you don&apos;t use characters like &apos;\&apos; &apos;/&apo
         <source>Maximum length is %n characters.</source>
         <translatorcomment>Label to indicate the maximum number of characters in the text area. The %n placeholder indicates the number of characters, please keep it. CON-942</translatorcomment>
         <translation>
-            <numerusform>De maximale lengte is %n karakters.</numerusform>
-            <numerusform>De maximale lengte is %n karakters.</numerusform>
+            <numerusform>De maximale lengte is %n karakters</numerusform>
+            <numerusform>De maximale lengte is %n karakters</numerusform>
         </translation>
     </message>
 </context>
@@ -8877,7 +9117,7 @@ Please, ensure that you don&apos;t use characters like &apos;\&apos; &apos;/&apo
     <message>
         <source>Completing</source>
         <translatorcomment>Transfer is being completed</translatorcomment>
-        <translation>Voltooien</translation>
+        <translation>Voltooien…</translation>
     </message>
     <message>
         <source>Downloading…</source>
@@ -9403,7 +9643,7 @@ Please, ensure that you don&apos;t use characters like &apos;\&apos; &apos;/&apo
         <source>Sync transfers cannot be cancelled individually.
 Please delete the folder sync from settings to cancel them.</source>
         <translatorcomment>Message displayed when the user is trying to cancel a sync transfer.</translatorcomment>
-        <translation>Synchronisatie-overdrachten kunnen niet worden geannuleerd. Om de synchronisatie te verwijderen, gaat u naar Instellingen in de desktop-applicatie en verwijder de gesynchroniseerde map. </translation>
+        <translation>Synchronisatie-overdrachten kunnen niet worden geannuleerd. Om de synchronisatie te verwijderen, gaat u naar Instellingen in de desktop-applicatie en verwijder de gesynchroniseerde map.</translation>
     </message>
 </context>
 <context>
@@ -9431,7 +9671,7 @@ Please delete the folder sync from settings to cancel them.</source>
     <message>
         <source>Cancel all downloads</source>
         <translatorcomment>Tooltip for cancel button when the user is in the downloads category</translatorcomment>
-        <translation>Alle overdrachten in Downloads annuleren</translation>
+        <translation>Alle overdrachten in Downloads annuleren </translation>
     </message>
     <message>
         <source>Cancel all failed</source>
@@ -9715,7 +9955,7 @@ Please delete the folder sync from settings to cancel them.</source>
     <message>
         <source>This will send your logs to our Support team for diagnostics.</source>
         <translatorcomment>Messagebox string to confirma that the user wants to send a report to helpdesk;CON-1094</translatorcomment>
-        <translation>Uw logboeken worden dan naar ons Ondersteuningsteam gestuurd voor diagnostiek.</translation>
+        <translation>Uw logs worden dan naar ons Ondersteuningsteam gestuurd voor diagnostiek</translation>
     </message>
 </context>
 <context>
