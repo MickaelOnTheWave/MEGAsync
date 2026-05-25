@@ -1181,7 +1181,6 @@ void MegaApplication::start()
     }
 
     applyProxySettings();
-    Platform::getInstance()->startShellDispatcher(this);
 #ifdef Q_OS_MACOS
     if (!preferences->isOneTimeActionDone(Preferences::ONE_TIME_ACTION_ACTIVE_FINDER_EXT))
     {
